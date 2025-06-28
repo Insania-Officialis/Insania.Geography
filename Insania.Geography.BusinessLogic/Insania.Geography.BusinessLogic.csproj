@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.6" />
+    
+    <PackageReference Include="Insania.Shared.Models" Version="1.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Insania.Geography.Contracts\Insania.Geography.Contracts.csproj" />
+    <ProjectReference Include="..\Insania.Geography.DataAccess\Insania.Geography.DataAccess.csproj" />
+  </ItemGroup>
+
+</Project>

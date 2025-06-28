@@ -1,0 +1,1 @@
+﻿create extension if not exists postgis schema insania_geography;
