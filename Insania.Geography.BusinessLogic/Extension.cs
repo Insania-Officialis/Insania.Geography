@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-//using Insania.Geography.Contracts.BusinessLogic;
+using Insania.Geography.Contracts.BusinessLogic;
 using Insania.Geography.DataAccess;
 
 namespace Insania.Geography.BusinessLogic;
@@ -18,6 +18,6 @@ public static class Extension
     public static IServiceCollection AddGeographyBL(this IServiceCollection services) =>
         services
             .AddGeographyDAO() //сервисы работы с данными в зоне географии
-            //.AddScoped<ICountriesBL, CountriesBL>() //сервис работы с бизнес-логикой стран
+            .AddScoped<IGeographyObjectsBL, GeographyObjectsBL>() //сервис работы с бизнес-логикой географических объектов
         ;
 }

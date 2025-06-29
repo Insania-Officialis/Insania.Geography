@@ -19,6 +19,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insania.Geography.Tests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insania.Geography.BusinessLogic", "Insania.Geography.BusinessLogic\Insania.Geography.BusinessLogic.csproj", "{47A0CDD3-38CE-49E2-9BC2-3BFB3CDF7F4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insania.Geography.Initializer", "Insania.Geography.Initializer\Insania.Geography.Initializer.csproj", "{A9CB8A08-8233-411E-96F9-827B1F0AC8FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insania.Geography.ApiRead", "Insania.Geography.ApiRead\Insania.Geography.ApiRead.csproj", "{62D09809-E6D7-4890-BDE3-85DDE0EA0B72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insania.Geography.Middleware", "Insania.Geography.Middleware\Insania.Geography.Middleware.csproj", "{293C2209-2F40-4F65-99C6-455E5A5E3D81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +63,18 @@ Global
 		{47A0CDD3-38CE-49E2-9BC2-3BFB3CDF7F4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47A0CDD3-38CE-49E2-9BC2-3BFB3CDF7F4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47A0CDD3-38CE-49E2-9BC2-3BFB3CDF7F4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9CB8A08-8233-411E-96F9-827B1F0AC8FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9CB8A08-8233-411E-96F9-827B1F0AC8FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9CB8A08-8233-411E-96F9-827B1F0AC8FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9CB8A08-8233-411E-96F9-827B1F0AC8FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62D09809-E6D7-4890-BDE3-85DDE0EA0B72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62D09809-E6D7-4890-BDE3-85DDE0EA0B72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62D09809-E6D7-4890-BDE3-85DDE0EA0B72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62D09809-E6D7-4890-BDE3-85DDE0EA0B72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{293C2209-2F40-4F65-99C6-455E5A5E3D81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{293C2209-2F40-4F65-99C6-455E5A5E3D81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{293C2209-2F40-4F65-99C6-455E5A5E3D81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{293C2209-2F40-4F65-99C6-455E5A5E3D81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

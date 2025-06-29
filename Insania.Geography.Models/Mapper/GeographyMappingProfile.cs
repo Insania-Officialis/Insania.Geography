@@ -16,7 +16,7 @@ public class GeographyMappingProfile : Profile
     /// </summary>
     public GeographyMappingProfile()
     {
-        //Преобразование модели сущности страны в базовую модель элемента ответа списком
-        //CreateMap<Country, BaseResponseListItem>();
+        //Преобразование модели сущности географического объекта в базовую модель элемента ответа списком
+        CreateMap<GeographyObject, BaseResponseListItem>();
     }
 }
