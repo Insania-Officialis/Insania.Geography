@@ -1,26 +1,26 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-using Insania.Geography.Contracts.DataAccess;
-using Insania.Geography.Entities;
+using Insania.Geography.Contracts.BusinessLogic;
+using Insania.Geography.Models.Responses.GeographyObjectsCoordinates;
 using Insania.Geography.Tests.Base;
 
 using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
 
 using ErrorMessagesGeography = Insania.Geography.Messages.ErrorMessages;
 
-namespace Insania.Geography.Tests.DataAccess;
+namespace Insania.Geography.Tests.BusinessLogic;
 
 /// <summary>
-/// Тесты сервиса работы с данными координат географических объектов
+/// Тесты сервиса работы с бизнес-логикой координат географических объектов
 /// </summary>
 [TestFixture]
-public class GeographyObjectsCoordinatesDAOTests : BaseTest
+public class GeographyObjectsCoordinatesBLTests : BaseTest
 {
     #region Поля
     /// <summary>
-    /// Сервис работы с данными координат географических объектов
+    /// Сервис работы с бизнес-логикой координат географических объектов
     /// </summary>
-    private IGeographyObjectsCoordinatesDAO GeographyObjectsCoordinatesDAO { get; set; }
+    private IGeographyObjectsCoordinatesBL GeographyObjectsCoordinatesBL { get; set; }
     #endregion
 
     #region Общие методы
@@ -31,7 +31,7 @@ public class GeographyObjectsCoordinatesDAOTests : BaseTest
     public void Setup()
     {
         //Получение зависимости
-        GeographyObjectsCoordinatesDAO = ServiceProvider.GetRequiredService<IGeographyObjectsCoordinatesDAO>();
+        GeographyObjectsCoordinatesBL = ServiceProvider.GetRequiredService<IGeographyObjectsCoordinatesBL>();
     }
 
     /// <summary>
@@ -46,28 +46,6 @@ public class GeographyObjectsCoordinatesDAOTests : BaseTest
 
     #region Методы тестирования
     /// <summary>
-    /// Тест метода получения списка координат географических объектов
-    /// </summary>
-    [Test]
-    public async Task GetListTest()
-    {
-        try
-        {
-            //Получение результата
-            List<GeographyObjectCoordinate>? result = await GeographyObjectsCoordinatesDAO.GetList();
-
-            //Проверка результата
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result, Is.Not.Empty);
-        }
-        catch (Exception)
-        {
-            //Проброс исключения
-            throw;
-        }
-    }
-
-    /// <summary>
     /// Тест метода получения списка координат географических объектов по идентификатору географического объекта
     /// </summary>
     /// <param cref="long?" name="geographyObjectId">Идентификатор географического объекта</param>
@@ -80,14 +58,18 @@ public class GeographyObjectsCoordinatesDAOTests : BaseTest
         try
         {
             //Получение результата
-            List<GeographyObjectCoordinate>? result = await GeographyObjectsCoordinatesDAO.GetList(geographyObjectId);
+            GeographyObjectsCoordinatesResponseList? result = await GeographyObjectsCoordinatesBL.GetList(geographyObjectId);
 
             //Проверка результата
             Assert.That(result, Is.Not.Null);
             switch (geographyObjectId)
             {
-                case -1: case 10000: Assert.That(result, Is.Empty); break;
-                case 1: Assert.That(result, Is.Not.Empty); Assert.That(!result.Any(x => x.GeographyObjectEntity == null)); break;
+                case 1:
+                    Assert.That(string.IsNullOrWhiteSpace(result.Name), Is.False);
+                    Assert.That(result.Center, Is.Not.Null);
+                    Assert.That(result.Zoom, Is.Positive);
+                    Assert.That(result.Items, Is.Not.Empty);
+                    break;
                 default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
             }
         }
@@ -97,6 +79,7 @@ public class GeographyObjectsCoordinatesDAOTests : BaseTest
             switch (geographyObjectId)
             {
                 case null: Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotFoundGeographyObject)); break;
+                case -1: case 10000: Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotFoundGeographyObjectCoordinate)); break;
                 default: throw;
             }
         }

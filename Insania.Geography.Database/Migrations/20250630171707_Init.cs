@@ -26,6 +26,7 @@ namespace Insania.Geography.Database.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false, comment: "Первичный ключ таблицы")
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TypeDiscriminator = table.Column<string>(type: "character varying(21)", maxLength: 21, nullable: false),
                     date_create = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, comment: "Дата создания"),
                     username_create = table.Column<string>(type: "text", nullable: false, comment: "Логин пользователя, создавшего"),
                     date_update = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, comment: "Дата обновления"),
@@ -70,18 +71,25 @@ namespace Insania.Geography.Database.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false, comment: "Первичный ключ таблицы")
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    polygon = table.Column<Polygon>(type: "geometry", nullable: false, comment: "Полигон (массив координат)"),
+                    type_id = table.Column<long>(type: "bigint", nullable: true, comment: "Идентификатор типа координаты"),
+                    TypeDiscriminator = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: false),
                     date_create = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, comment: "Дата создания"),
                     username_create = table.Column<string>(type: "text", nullable: false, comment: "Логин пользователя, создавшего"),
                     date_update = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, comment: "Дата обновления"),
                     username_update = table.Column<string>(type: "text", nullable: false, comment: "Логин пользователя, обновившего"),
                     date_deleted = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, comment: "Дата удаления"),
-                    is_system = table.Column<bool>(type: "boolean", nullable: false, comment: "Признак системной записи"),
-                    polygon = table.Column<Polygon>(type: "geometry", nullable: false, comment: "Полигон (массив координат)"),
-                    type_id = table.Column<long>(type: "bigint", nullable: true, comment: "Идентификатор типа координаты")
+                    is_system = table.Column<bool>(type: "boolean", nullable: false, comment: "Признак системной записи")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_r_coordinates", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_r_coordinates_c_coordinates_types_type_id",
+                        column: x => x.type_id,
+                        principalSchema: "insania_geography",
+                        principalTable: "c_coordinates_types",
+                        principalColumn: "id");
                 },
                 comment: "Координаты географии");
 
@@ -137,6 +145,7 @@ namespace Insania.Geography.Database.Migrations
                     date_deleted = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, comment: "Дата удаления"),
                     is_system = table.Column<bool>(type: "boolean", nullable: false, comment: "Признак системной записи"),
                     center = table.Column<Point>(type: "geometry", nullable: false, comment: "Координаты точки центра сущности"),
+                    area = table.Column<double>(type: "double precision", nullable: false, comment: "Площадь сущности"),
                     zoom = table.Column<int>(type: "integer", nullable: false, comment: "Коэффициент масштаба отображения сущности"),
                     coordinate_id = table.Column<long>(type: "bigint", nullable: false, comment: "Идентификатор координаты")
                 },
@@ -149,6 +158,13 @@ namespace Insania.Geography.Database.Migrations
                         column: x => x.geography_object_id,
                         principalSchema: "insania_geography",
                         principalTable: "c_geography_objects",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_u_geography_objects_coordinates_r_coordinates_coordinate_id",
+                        column: x => x.coordinate_id,
+                        principalSchema: "insania_geography",
+                        principalTable: "r_coordinates",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 },
@@ -174,6 +190,12 @@ namespace Insania.Geography.Database.Migrations
                 .Annotation("Npgsql:IndexMethod", "gist");
 
             migrationBuilder.CreateIndex(
+                name: "IX_r_coordinates_type_id",
+                schema: "insania_geography",
+                table: "r_coordinates",
+                column: "type_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_u_geography_objects_coordinates_geography_object_id",
                 schema: "insania_geography",
                 table: "u_geography_objects_coordinates",
@@ -184,14 +206,6 @@ namespace Insania.Geography.Database.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "c_coordinates_types",
-                schema: "insania_geography");
-
-            migrationBuilder.DropTable(
-                name: "r_coordinates",
-                schema: "insania_geography");
-
-            migrationBuilder.DropTable(
                 name: "u_geography_objects_coordinates",
                 schema: "insania_geography");
 
@@ -200,7 +214,15 @@ namespace Insania.Geography.Database.Migrations
                 schema: "insania_geography");
 
             migrationBuilder.DropTable(
+                name: "r_coordinates",
+                schema: "insania_geography");
+
+            migrationBuilder.DropTable(
                 name: "c_geography_objects_types",
+                schema: "insania_geography");
+
+            migrationBuilder.DropTable(
+                name: "c_coordinates_types",
                 schema: "insania_geography");
         }
     }

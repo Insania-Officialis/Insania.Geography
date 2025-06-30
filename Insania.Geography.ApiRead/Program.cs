@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
+using NetTopologySuite;
+using NetTopologySuite.IO.Converters;
 using Serilog;
 
 using Insania.Shared.Contracts.Services;
@@ -149,6 +151,9 @@ services.AddCors(options =>
     options.DefaultPolicyName = "BadPolicy";
 });
 
+//Добавление возможности работы с координатами
+var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
+
 //Добавление контроллеров
 services
     .AddControllers()
@@ -158,6 +163,7 @@ services
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
         options.JsonSerializerOptions.WriteIndented = true;
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.Converters.Add(new GeoJsonConverterFactory(NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326)));
     });
 
 //Добавление параметров преобразования моделей

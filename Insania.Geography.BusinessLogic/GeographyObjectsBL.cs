@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+
 using AutoMapper;
 
 using Insania.Shared.Models.Responses.Base;

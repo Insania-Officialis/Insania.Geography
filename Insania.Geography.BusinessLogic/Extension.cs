@@ -19,5 +19,6 @@ public static class Extension
         services
             .AddGeographyDAO() //сервисы работы с данными в зоне географии
             .AddScoped<IGeographyObjectsBL, GeographyObjectsBL>() //сервис работы с бизнес-логикой географических объектов
+            .AddScoped<IGeographyObjectsCoordinatesBL, GeographyObjectsCoordinatesBL>() //сервис работы с бизнес-логикой координат географических объектов
         ;
 }

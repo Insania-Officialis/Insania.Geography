@@ -377,8 +377,9 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, GeographyConte
                             DateTime? dateDeleted = null;
                             if (!string.IsNullOrWhiteSpace(key[3])) dateDeleted = DateTime.Parse(key[3]);
                             Point center = coordinate.PolygonEntity.InteriorPoint;
+                            double area = coordinate.PolygonEntity.Area;
                             int zoom = 3;
-                            GeographyObjectCoordinate entity = new(long.Parse(key[0]), _username, true, center, zoom, coordinate, geographyObject, dateDeleted);
+                            GeographyObjectCoordinate entity = new(long.Parse(key[0]), _username, true, center, area, zoom, coordinate, geographyObject, dateDeleted);
 
                             //Добавление сущности в бд
                             await _geographyContext.GeographyObjectsCoordinates.AddAsync(entity);

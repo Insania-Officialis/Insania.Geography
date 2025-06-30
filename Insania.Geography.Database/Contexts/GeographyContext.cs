@@ -70,13 +70,39 @@ public class GeographyContext : DbContext
         //Проверка наличия расширения
         modelBuilder.HasPostgresExtension("postgis");
 
-        //Смена базовой модели типа координаты
-        modelBuilder.Ignore<CoordinateType>();
-        modelBuilder.Entity<CoordinateTypeGeography>();
+        //Настройка сущности типа координаты
+        modelBuilder.Entity<CoordinateType>(entity =>
+        {
+            //Установка наименования таблицы
+            entity.ToTable("c_coordinates_types");
 
-        //Смена базовой модели координаты
-        modelBuilder.Ignore<Coordinate>();
-        modelBuilder.Entity<CoordinateGeography>();
+            //Смена базовой модели типа координаты
+            entity.HasDiscriminator<string>("TypeDiscriminator")
+                  .HasValue<CoordinateTypeGeography>("Geography");
+
+            //Создание ограничения уникальности на псевдоним наименования типа координаты
+            entity.HasAlternateKey(x => x.Alias);
+        });
+
+        //Настройка сущности координаты
+        modelBuilder.Entity<Coordinate>(entity =>
+        {
+            //Установка наименования таблицы
+            entity.ToTable("r_coordinates");
+
+            //Смена базовой модели координаты
+            entity.HasDiscriminator<string>("TypeDiscriminator")
+                  .HasValue<CoordinateGeography>("Geography");
+
+            //Создание ограничения уникальности на псевдоним типа координаты
+            modelBuilder.Entity<CoordinateGeography>().HasIndex(x => x.PolygonEntity).HasMethod("gist");
+        });
+
+        //Добавление вторичного ключа для типа координат
+        modelBuilder.Entity<CoordinateGeography>()
+            .HasOne(x => x.TypeEntity)
+            .WithMany()
+            .HasForeignKey(x => x.TypeId);
 
         //Создание ограничения уникальности на псевдоним типа географического объекта
         modelBuilder.Entity<GeographyObjectType>().HasAlternateKey(x => x.Alias);
@@ -84,14 +110,14 @@ public class GeographyContext : DbContext
         //Создание ограничения уникальности на псевдоним наименования географического объекта
         modelBuilder.Entity<GeographyObject>().HasAlternateKey(x => x.Alias);
 
-        //Создание ограничения уникальности на псевдоним типа координаты
-        modelBuilder.Entity<CoordinateTypeGeography>().HasAlternateKey(x => x.Alias);
-
-        //Добавление gin-индекса на поле с координатами
-        modelBuilder.Entity<CoordinateGeography>().HasIndex(x => x.PolygonEntity).HasMethod("gist");
-
         //Создание ограничения уникальности на координату географического объекта
         modelBuilder.Entity<GeographyObjectCoordinate>().HasAlternateKey(x => new { x.CoordinateId, x.GeographyObjectId });
+
+        //Добавление вторичного ключа для координат
+        modelBuilder.Entity<GeographyObjectCoordinate>()
+            .HasOne(x => x.CoordinateEntity)
+            .WithMany()
+            .HasForeignKey(x => x.CoordinateId);
     }
     #endregion
 }

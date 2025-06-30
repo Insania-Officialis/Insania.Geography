@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Insania.Geography.Entities\Insania.Geography.Entities.csproj" />
+    <ProjectReference Include="..\Insania.Geography.Models\Insania.Geography.Models.csproj" />
   </ItemGroup>
 
 </Project>
