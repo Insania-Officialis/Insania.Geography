@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insania.Geography.ApiRead",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insania.Geography.Middleware", "Insania.Geography.Middleware\Insania.Geography.Middleware.csproj", "{293C2209-2F40-4F65-99C6-455E5A5E3D81}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insania.Geography.ApiCommit", "Insania.Geography.ApiCommit\Insania.Geography.ApiCommit.csproj", "{57EF8961-0030-4653-B6AC-6E272D7BBB31}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{293C2209-2F40-4F65-99C6-455E5A5E3D81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{293C2209-2F40-4F65-99C6-455E5A5E3D81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{293C2209-2F40-4F65-99C6-455E5A5E3D81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57EF8961-0030-4653-B6AC-6E272D7BBB31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57EF8961-0030-4653-B6AC-6E272D7BBB31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57EF8961-0030-4653-B6AC-6E272D7BBB31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57EF8961-0030-4653-B6AC-6E272D7BBB31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

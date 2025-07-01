@@ -6,28 +6,36 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NetTopologySuite.Geometries;
 
 using Insania.Shared.Contracts.Services;
+using Insania.Shared.Models.Responses.Base;
 
+using Insania.Geography.Contracts.BusinessLogic;
 using Insania.Geography.Contracts.DataAccess;
 using Insania.Geography.Entities;
+using Insania.Geography.Models.Requests.Coordinates;
 using Insania.Geography.Tests.Base;
 
 using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
 
 using ErrorMessagesGeography = Insania.Geography.Messages.ErrorMessages;
 
-namespace Insania.Geography.Tests.DataAccess;
+namespace Insania.Geography.Tests.BusinessLogic;
 
 /// <summary>
-/// Тесты сервиса работы с данными координат
+/// Тесты сервиса работы с бизнес-логикой координат
 /// </summary>
 [TestFixture]
-public class CoordinatesDAOTests : BaseTest
+public class CoordinatesBLTests : BaseTest
 {
     #region Поля
     /// <summary>
     /// Сервис работы с данными координат
     /// </summary>
     private ICoordinatesDAO CoordinatesDAO { get; set; }
+
+    /// <summary>
+    /// Сервис работы с бизнес-логикой координат
+    /// </summary>
+    private ICoordinatesBL CoordinatesBL { get; set; }
 
     /// <summary>
     /// Сервис преобразования полигона
@@ -49,6 +57,7 @@ public class CoordinatesDAOTests : BaseTest
     {
         //Получение зависимости
         CoordinatesDAO = ServiceProvider.GetRequiredService<ICoordinatesDAO>();
+        CoordinatesBL = ServiceProvider.GetRequiredService<ICoordinatesBL>();
         PolygonParserSL = ServiceProvider.GetRequiredService<IPolygonParserSL>();
     }
 
@@ -63,62 +72,6 @@ public class CoordinatesDAOTests : BaseTest
     #endregion
 
     #region Методы тестирования
-    /// <summary>
-    /// Тест метода получения координаты по идентификатору
-    /// </summary>
-    /// <param cref="long?" name="id">Идентификатор координаты</param>
-    [TestCase(null)]
-    [TestCase(-1)]
-    [TestCase(1)]
-    [TestCase(2)]
-    public async Task GetByIdTest(long? id)
-    {
-        try
-        {
-            //Получение результата
-            CoordinateGeography? result = await CoordinatesDAO.GetById(id);
-
-            //Проверка результата
-            switch (id)
-            {
-                case -1: Assert.That(result, Is.Null); break;
-                case 1: case 2: Assert.That(result, Is.Not.Null); break;
-                default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
-            }
-        }
-        catch (Exception ex)
-        {
-            //Проверка исключения
-            switch (id)
-            {
-                case null: Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotFoundCoordinate)); break;
-                default: throw;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Тест метода получения списка координат
-    /// </summary>
-    [Test]
-    public async Task GetListTest()
-    {
-        try
-        {
-            //Получение результата
-            List<CoordinateGeography>? result = await CoordinatesDAO.GetList();
-
-            //Проверка результата
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result, Is.Not.Empty);
-        }
-        catch (Exception)
-        {
-            //Проброс исключения
-            throw;
-        }
-    }
-
     /// <summary>
     /// Тест метода изменения координаты
     /// </summary>
@@ -143,18 +96,17 @@ public class CoordinatesDAOTests : BaseTest
             }
 
             //Формирование запроса
+            double[][][]? coordinatesArray = null;
             Polygon? polygon = null;
             if (!string.IsNullOrWhiteSpace(coordinates))
             {
-                double[][][]? coordinatesArray = JsonSerializer.Deserialize<double[][][]>(coordinates);
-                if (coordinatesArray != null)
-                {
-                    polygon = PolygonParserSL.FromDoubleArrayToPolygon(coordinatesArray);
-                }
+                coordinatesArray = JsonSerializer.Deserialize<double[][][]>(coordinates);
+                if (coordinatesArray != null) polygon = PolygonParserSL.FromDoubleArrayToPolygon(coordinatesArray);
             }
+            CoordinateEditRequest? request = id == null && polygon == null ? null : new(id, coordinatesArray);
 
             //Получение результата
-            bool? result = await CoordinatesDAO.Edit(id, polygon, _username);
+            BaseResponse? result = await CoordinatesBL.Edit(request, _username);
 
             //Получение значения после
             CoordinateGeography? coordinateAfter = null;
@@ -163,8 +115,8 @@ public class CoordinatesDAOTests : BaseTest
             //Проверка результата
             switch (id, coordinates)
             {
-                case (2, "[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]"): 
-                    Assert.That(result, Is.True);
+                case (2, "[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]"):
+                    Assert.That(result.Success, Is.True);
                     Assert.That(coordinateBefore, Is.Not.Null);
                     Assert.That(coordinateAfter, Is.Not.Null);
                     Assert.That(coordinateBefore!.Id, Is.EqualTo(coordinateAfter!.Id));
@@ -181,10 +133,8 @@ public class CoordinatesDAOTests : BaseTest
             //Проверка исключения
             switch (id, coordinates)
             {
-                case (null, null):
-                case (-1, "[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]"):
-                    Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotFoundCoordinate)); 
-                    break;
+                case (null, null): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesShared.EmptyRequest)); break;
+                case (-1, "[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotFoundCoordinate)); break;
                 case (-1, null): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesShared.EmptyCoordinates)); break;
                 case (1, "[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.DeletedCoordinate)); break;
                 case (2, "[[[0, 0],[0, 5],[5, 0],[0, 0]]]"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotChangesCoordinate)); break;

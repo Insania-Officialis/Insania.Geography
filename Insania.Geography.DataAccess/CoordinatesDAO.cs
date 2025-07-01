@@ -1,12 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
+using NetTopologySuite.Geometries;
+
 using Insania.Geography.Contracts.DataAccess;
 using Insania.Geography.Database.Contexts;
 using Insania.Geography.Entities;
-using Insania.Geography.Messages;
 
-using ErrorMessages = Insania.Shared.Messages.ErrorMessages;
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
+using ErrorMessagesGeography = Insania.Geography.Messages.ErrorMessages;
+using InformationMessages = Insania.Geography.Messages.InformationMessages;
 
 namespace Insania.Geography.DataAccess;
 
@@ -31,6 +35,41 @@ public class CoordinatesDAO(ILogger<CoordinatesDAO> logger, GeographyContext con
 
     #region Методы
     /// <summary>
+    /// Метод получения координаты по идентификатору
+    /// </summary>
+    /// <param cref="long?" name="id">Идентификатор координаты</param>
+    /// <returns cref="CoordinateGeography?">Координата</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<CoordinateGeography?> GetById(long? id)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredGetByIdCoordinateMethod);
+
+            //Проверки
+            if (id == null) throw new Exception(ErrorMessagesGeography.NotFoundCoordinate);
+
+            //Получение данных из бд
+            CoordinateGeography? data = await _context.Coordinates
+                .Where(x => x.Id == id)
+                .Include(x => x.TypeEntity)
+                .FirstOrDefaultAsync();
+
+            //Возврат результата
+            return data;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Метод получения списка координат
     /// </summary>
     /// <returns cref="List{CoordinateGeography}">Список координат</returns>
@@ -53,7 +92,52 @@ public class CoordinatesDAO(ILogger<CoordinatesDAO> logger, GeographyContext con
         catch (Exception ex)
         {
             //Логгирование
-            _logger.LogError("{text}: {error}", ErrorMessages.Error, ex.Message);
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Метод изменения координаты
+    /// </summary>
+    /// <param cref="long?" name="id">Идентификатор координаты</param>
+    /// <param cref="Polygon?" name="coordinates">Координаты</param>
+    /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
+    /// <returns cref="bool">Признак успешности</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<bool> Edit(long? id, Polygon? coordinates, string username)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredEditCoordinateMethod);
+
+            //Проверки
+            if (id == null) throw new Exception(ErrorMessagesGeography.NotFoundCoordinate);
+            if (coordinates == null) throw new Exception(ErrorMessagesShared.EmptyCoordinates);
+
+            //Получение данных из бд
+            CoordinateGeography data = await GetById(id) ?? throw new Exception(ErrorMessagesGeography.NotFoundCoordinate);
+
+            //Проверки
+            if (data.DateDeleted != null) throw new Exception(ErrorMessagesGeography.DeletedCoordinate);
+            if (data.PolygonEntity == coordinates) throw new Exception(ErrorMessagesGeography.NotChangesCoordinate);
+
+            //Запись данных в бд
+            data.SetPolygon(coordinates);
+            data.SetUpdate(username);
+            _context.Update(data);
+            await _context.SaveChangesAsync();
+
+            //Возврат результата
+            return true;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
 
             //Проброс исключения
             throw;
