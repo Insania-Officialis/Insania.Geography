@@ -4,9 +4,11 @@ using Microsoft.Extensions.Logging;
 using Insania.Geography.Contracts.DataAccess;
 using Insania.Geography.Database.Contexts;
 using Insania.Geography.Entities;
-using Insania.Geography.Messages;
 
-using ErrorMessages = Insania.Shared.Messages.ErrorMessages;
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
+using ErrorMessagesGeography = Insania.Geography.Messages.ErrorMessages;
+using InformationMessages = Insania.Geography.Messages.InformationMessages;
 
 namespace Insania.Geography.DataAccess;
 
@@ -31,6 +33,40 @@ public class CoordinatesTypesDAO(ILogger<CoordinatesTypesDAO> logger, GeographyC
 
     #region Методы
     /// <summary>
+    /// Метод получения типа координаты по идентификатору
+    /// </summary>
+    /// <param cref="long?" name="id">Идентификатор типа координаты</param>
+    /// <returns cref="CoordinateTypeGeography?">Тип координаты</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<CoordinateTypeGeography?> GetById(long? id)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredGetByIdCoordinateTypeMethod);
+
+            //Проверки
+            if (id == null) throw new Exception(ErrorMessagesGeography.NotFoundCoordinateType);
+
+            //Получение данных из бд
+            CoordinateTypeGeography? data = await _context.CoordinatesTypes
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync();
+
+            //Возврат результата
+            return data;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Метод получения списка типов координат
     /// </summary>
     /// <returns cref="List{CoordinateTypeGeography}">Список типов координат</returns>
@@ -53,7 +89,7 @@ public class CoordinatesTypesDAO(ILogger<CoordinatesTypesDAO> logger, GeographyC
         catch (Exception ex)
         {
             //Логгирование
-            _logger.LogError("{text}: {error}", ErrorMessages.Error, ex.Message);
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
 
             //Проброс исключения
             throw;

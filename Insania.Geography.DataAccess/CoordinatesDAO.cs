@@ -100,6 +100,44 @@ public class CoordinatesDAO(ILogger<CoordinatesDAO> logger, GeographyContext con
     }
 
     /// <summary>
+    /// Метод добавление координаты
+    /// </summary>
+    /// <param cref="Polygon?" name="coordinates">Координаты</param>
+    /// <param cref="CoordinateTypeGeography?" name="type">Тип координаты</param>
+    /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
+    /// <returns cref="long?">Идентификатор записи</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<long?> Add(Polygon? coordinates, CoordinateTypeGeography? type, string username)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredAddCoordinateMethod);
+
+            //Проверки
+            if (coordinates == null) throw new Exception(ErrorMessagesShared.EmptyCoordinates);
+            if (type == null) throw new Exception(ErrorMessagesGeography.NotFoundCoordinateType);
+            if (type.DateDeleted != null) throw new Exception(ErrorMessagesGeography.DeletedCoordinateType);
+
+            //Запись данных в бд
+            CoordinateGeography entity = new(username, false, coordinates, type);
+            _context.Add(entity);
+            await _context.SaveChangesAsync();
+
+            //Возврат результата
+            return entity.Id;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Метод изменения координаты
     /// </summary>
     /// <param cref="long?" name="id">Идентификатор координаты</param>
@@ -127,6 +165,90 @@ public class CoordinatesDAO(ILogger<CoordinatesDAO> logger, GeographyContext con
 
             //Запись данных в бд
             data.SetPolygon(coordinates);
+            data.SetUpdate(username);
+            _context.Update(data);
+            await _context.SaveChangesAsync();
+
+            //Возврат результата
+            return true;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Метод восстановления координаты
+    /// </summary>
+    /// <param cref="long?" name="id">Идентификатор координаты</param>
+    /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
+    /// <returns cref="bool">Признак успешности</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<bool> Restore(long? id, string username)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredRestoreCoordinateMethod);
+
+            //Проверки
+            if (id == null) throw new Exception(ErrorMessagesGeography.NotFoundCoordinate);
+
+            //Получение данных из бд
+            CoordinateGeography data = await GetById(id) ?? throw new Exception(ErrorMessagesGeography.NotFoundCoordinate);
+
+            //Проверки
+            if (data.DateDeleted == null) throw new Exception(ErrorMessagesGeography.NotDeletedCoordinate);
+
+            //Запись данных в бд
+            data.SetRestored();
+            data.SetUpdate(username);
+            _context.Update(data);
+            await _context.SaveChangesAsync();
+
+            //Возврат результата
+            return true;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Метод закрытия координаты
+    /// </summary>
+    /// <param cref="long?" name="id">Идентификатор координаты</param>
+    /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
+    /// <returns cref="bool">Признак успешности</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<bool> Close(long? id, string username)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredCloseCoordinateMethod);
+
+            //Проверки
+            if (id == null) throw new Exception(ErrorMessagesGeography.NotFoundCoordinate);
+
+            //Получение данных из бд
+            CoordinateGeography data = await GetById(id) ?? throw new Exception(ErrorMessagesGeography.NotFoundCoordinate);
+
+            //Проверки
+            if (data.DateDeleted != null) throw new Exception(ErrorMessagesGeography.DeletedCoordinate);
+
+            //Запись данных в бд
+            data.SetDeleted();
             data.SetUpdate(username);
             _context.Update(data);
             await _context.SaveChangesAsync();

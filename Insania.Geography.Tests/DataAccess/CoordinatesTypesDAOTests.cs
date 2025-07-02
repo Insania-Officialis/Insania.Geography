@@ -4,6 +4,10 @@ using Insania.Geography.Contracts.DataAccess;
 using Insania.Geography.Entities;
 using Insania.Geography.Tests.Base;
 
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
+using ErrorMessagesGeography = Insania.Geography.Messages.ErrorMessages;
+
 namespace Insania.Geography.Tests.DataAccess;
 
 /// <summary>
@@ -41,6 +45,39 @@ public class CoordinatesTypesDAOTests : BaseTest
     #endregion
 
     #region Методы тестирования
+    /// <summary>
+    /// Тест метода получения типа координаты по идентификатору
+    /// </summary>
+    /// <param cref="long?" name="id">Идентификатор типа координаты</param>
+    [TestCase(null)]
+    [TestCase(-1)]
+    [TestCase(1)]
+    [TestCase(2)]
+    public async Task GetByIdTest(long? id)
+    {
+        try
+        {
+            //Получение результата
+            CoordinateTypeGeography? result = await CoordinatesTypesDAO.GetById(id);
+
+            //Проверка результата
+            switch (id)
+            {
+                case -1: Assert.That(result, Is.Null); break;
+                case 1: case 2: Assert.That(result, Is.Not.Null); break;
+                default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
+            }
+        }
+        catch (Exception ex)
+        {
+            //Проверка исключения
+            switch (id)
+            {
+                case null: Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotFoundCoordinateType)); break;
+                default: throw;
+            }
+        }
+    }
     /// <summary>
     /// Тест метода получения списка типов координат
     /// </summary>
