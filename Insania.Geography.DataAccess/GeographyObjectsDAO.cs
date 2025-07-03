@@ -4,9 +4,11 @@ using Microsoft.Extensions.Logging;
 using Insania.Geography.Contracts.DataAccess;
 using Insania.Geography.Database.Contexts;
 using Insania.Geography.Entities;
-using Insania.Geography.Messages;
 
-using ErrorMessages = Insania.Shared.Messages.ErrorMessages;
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
+using ErrorMessagesGeography = Insania.Geography.Messages.ErrorMessages;
+using InformationMessages = Insania.Geography.Messages.InformationMessages;
 
 namespace Insania.Geography.DataAccess;
 
@@ -31,6 +33,41 @@ public class GeographyObjectsDAO(ILogger<GeographyObjectsDAO> logger, GeographyC
 
     #region Методы
     /// <summary>
+    /// Метод получения географического объекта по идентификатору
+    /// </summary>
+    /// <param cref="long?" name="id">Идентификатор географического объекта</param>
+    /// <returns cref="GeographyObject?">Географический объект</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<GeographyObject?> GetById(long? id)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredGetByIdGeographyObjectMethod);
+
+            //Проверки
+            if (id == null) throw new Exception(ErrorMessagesGeography.NotFoundGeographyObject);
+
+            //Получение данных из бд
+            GeographyObject? data = await _context.GeographyObjects
+                .Where(x => x.Id == id)
+                .Include(x => x.TypeEntity)
+                .FirstOrDefaultAsync();
+
+            //Возврат результата
+            return data;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Метод получения списка географических объектов
     /// </summary>
     /// <returns cref="List{GeographyObject}">Список географических объектов</returns>
@@ -53,7 +90,91 @@ public class GeographyObjectsDAO(ILogger<GeographyObjectsDAO> logger, GeographyC
         catch (Exception ex)
         {
             //Логгирование
-            _logger.LogError("{text}: {error}", ErrorMessages.Error, ex.Message);
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Метод восстановления географического объекта
+    /// </summary>
+    /// <param cref="long?" name="id">Идентификатор географического объекта</param>
+    /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
+    /// <returns cref="bool">Признак успешности</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<bool> Restore(long? id, string username)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredRestoreGeographyObjectMethod);
+
+            //Проверки
+            if (id == null) throw new Exception(ErrorMessagesGeography.NotFoundGeographyObject);
+
+            //Получение данных из бд
+            GeographyObject data = await GetById(id) ?? throw new Exception(ErrorMessagesGeography.NotFoundGeographyObject);
+
+            //Проверки
+            if (data.DateDeleted == null) throw new Exception(ErrorMessagesGeography.NotDeletedGeographyObject);
+
+            //Запись данных в бд
+            data.SetRestored();
+            data.SetUpdate(username);
+            _context.Update(data);
+            await _context.SaveChangesAsync();
+
+            //Возврат результата
+            return true;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Метод закрытия географического объекта
+    /// </summary>
+    /// <param cref="long?" name="id">Идентификатор географического объекта</param>
+    /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
+    /// <returns cref="bool">Признак успешности</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<bool> Close(long? id, string username)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredCloseGeographyObjectMethod);
+
+            //Проверки
+            if (id == null) throw new Exception(ErrorMessagesGeography.NotFoundGeographyObject);
+
+            //Получение данных из бд
+            GeographyObject data = await GetById(id) ?? throw new Exception(ErrorMessagesGeography.NotFoundGeographyObject);
+
+            //Проверки
+            if (data.DateDeleted != null) throw new Exception(ErrorMessagesGeography.DeletedGeographyObject);
+
+            //Запись данных в бд
+            data.SetDeleted();
+            data.SetUpdate(username);
+            _context.Update(data);
+            await _context.SaveChangesAsync();
+
+            //Возврат результата
+            return true;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
 
             //Проброс исключения
             throw;

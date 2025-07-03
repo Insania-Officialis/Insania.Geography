@@ -57,6 +57,19 @@ public class GeographyObject : Compendium
         ParentId = parent?.Id;
         ParentEntity = parent;
     }
+
+    /// <summary>
+    /// Конструктор модели сущности географического объекта с сущностью
+    /// </summary>
+    /// <param cref="ITransliterationSL" name="transliteration">Сервис транслитерации</param>
+    /// <param cref="GeographyObject" name="entity">Базовая сущность</param>
+    public GeographyObject(ITransliterationSL transliteration, GeographyObject entity) : base(transliteration, entity.Id, entity.UsernameCreate, entity.Name, entity.DateDeleted)
+    {
+        TypeId = entity.TypeId;
+        TypeEntity = entity.TypeEntity;
+        ParentId = entity.ParentId;
+        ParentEntity = entity.ParentEntity;
+    }
     #endregion
 
     #region Поля
