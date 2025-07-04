@@ -58,6 +58,15 @@ public class GeographyObjectCoordinate : EntityCoordinate
         GeographyObjectId = geographyObject.Id;
         GeographyObjectEntity = geographyObject;
     }
+
+    /// <summary>
+    /// Конструктор модели географического объекта координаты географического объекта с идентификатором
+    /// </summary>
+    /// <param cref="GeographyObjectCoordinate" name="entity">Базовая сущность</param>
+    public GeographyObjectCoordinate(GeographyObjectCoordinate entity) : this(entity.Id, entity.UsernameCreate, entity.IsSystem, entity.Center, entity.Area, entity.Zoom, (entity.CoordinateEntity as CoordinateGeography)!, entity.GeographyObjectEntity!, entity.DateDeleted)
+    {
+
+    }
     #endregion
 
     #region Поля

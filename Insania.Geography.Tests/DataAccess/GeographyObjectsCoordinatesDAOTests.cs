@@ -1,12 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-using Insania.Geography.Contracts.DataAccess;
+﻿using Insania.Geography.Contracts.DataAccess;
+using Insania.Geography.DataAccess;
 using Insania.Geography.Entities;
 using Insania.Geography.Tests.Base;
-
-using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
-
+using Microsoft.Extensions.DependencyInjection;
 using ErrorMessagesGeography = Insania.Geography.Messages.ErrorMessages;
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
 
 namespace Insania.Geography.Tests.DataAccess;
 
@@ -17,6 +15,13 @@ namespace Insania.Geography.Tests.DataAccess;
 public class GeographyObjectsCoordinatesDAOTests : BaseTest
 {
     #region Поля
+    /// <summary>
+    /// Логин пользователя, выполняющего действие
+    /// </summary>
+    private readonly string _username = "test";
+    #endregion
+
+    #region Зависимости
     /// <summary>
     /// Сервис работы с данными координат географических объектов
     /// </summary>
@@ -45,6 +50,40 @@ public class GeographyObjectsCoordinatesDAOTests : BaseTest
     #endregion
 
     #region Методы тестирования
+    /// <summary>
+    /// Тест метода получения координаты по идентификатору
+    /// </summary>
+    /// <param cref="long?" name="id">Идентификатор координаты</param>
+    [TestCase(null)]
+    [TestCase(-1)]
+    [TestCase(1)]
+    [TestCase(2)]
+    public async Task GetByIdTest(long? id)
+    {
+        try
+        {
+            //Получение результата
+            GeographyObjectCoordinate? result = await GeographyObjectsCoordinatesDAO.GetById(id);
+
+            //Проверка результата
+            switch (id)
+            {
+                case -1: Assert.That(result, Is.Null); break;
+                case 1: case 2: Assert.That(result, Is.Not.Null); break;
+                default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
+            }
+        }
+        catch (Exception ex)
+        {
+            //Проверка исключения
+            switch (id)
+            {
+                case null: Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotFoundGeographyObjectCoordinate)); break;
+                default: throw;
+            }
+        }
+    }
+
     /// <summary>
     /// Тест метода получения списка координат географических объектов
     /// </summary>
@@ -97,6 +136,112 @@ public class GeographyObjectsCoordinatesDAOTests : BaseTest
             switch (geographyObjectId)
             {
                 case null: Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotFoundGeographyObject)); break;
+                default: throw;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Тест метода восстановления координаты
+    /// </summary>
+    /// <param cref="long?" name="id">Идентификатор координаты</param>
+    [TestCase(null)]
+    [TestCase(-1)]
+    [TestCase(1)]
+    [TestCase(2)]
+    public async Task RestoreTest(long? id)
+    {
+        try
+        {
+            //Получение значения до
+            GeographyObjectCoordinate? coordinateBefore = null;
+            if (id != null)
+            {
+                coordinateBefore = await GeographyObjectsCoordinatesDAO.GetById(id);
+            }
+
+            //Получение результата
+            bool? result = await GeographyObjectsCoordinatesDAO.Restore(id, _username);
+
+            //Получение значения после
+            GeographyObjectCoordinate? coordinateAfter = null;
+            if (id != null) coordinateAfter = await GeographyObjectsCoordinatesDAO.GetById(id);
+
+            //Проверка результата
+            switch (id)
+            {
+                case 1:
+                    Assert.That(result, Is.True);
+                    Assert.That(coordinateBefore, Is.Not.Null);
+                    Assert.That(coordinateAfter, Is.Not.Null);
+                    Assert.That(coordinateBefore!.Id, Is.EqualTo(coordinateAfter!.Id));
+                    Assert.That(coordinateBefore!.DateCreate, Is.LessThan(coordinateAfter!.DateUpdate));
+                    Assert.That(coordinateAfter!.DateDeleted, Is.Null);
+                    await GeographyObjectsCoordinatesDAO.Close(id, _username);
+                    break;
+                default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
+            }
+        }
+        catch (Exception ex)
+        {
+            //Проверка исключения
+            switch (id)
+            {
+                case null: case -1: Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotFoundGeographyObjectCoordinate)); break;
+                case 2: Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotDeletedGeographyObjectCoordinate)); break;
+                default: throw;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Тест метода закрытия координаты
+    /// </summary>
+    /// <param cref="long?" name="id">Идентификатор координаты</param>
+    [TestCase(null)]
+    [TestCase(-1)]
+    [TestCase(1)]
+    [TestCase(2)]
+    public async Task CloseTest(long? id)
+    {
+        try
+        {
+            //Получение значения до
+            GeographyObjectCoordinate? coordinateBefore = null;
+            if (id != null)
+            {
+                coordinateBefore = await GeographyObjectsCoordinatesDAO.GetById(id);
+            }
+
+            //Получение результата
+            bool? result = await GeographyObjectsCoordinatesDAO.Close(id, _username);
+
+            //Получение значения после
+            GeographyObjectCoordinate? coordinateAfter = null;
+            if (id != null) coordinateAfter = await GeographyObjectsCoordinatesDAO.GetById(id);
+
+            //Проверка результата
+            switch (id)
+            {
+                case 2:
+                    Assert.That(result, Is.True);
+                    Assert.That(coordinateBefore, Is.Not.Null);
+                    Assert.That(coordinateAfter, Is.Not.Null);
+                    Assert.That(coordinateBefore!.Id, Is.EqualTo(coordinateAfter!.Id));
+                    Assert.That(coordinateBefore!.DateCreate, Is.LessThan(coordinateAfter!.DateUpdate));
+                    Assert.That(coordinateAfter!.DateDeleted, Is.Not.Null);
+                    await GeographyObjectsCoordinatesDAO.Restore(id, _username);
+                    break;
+                default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
+            }
+        }
+        catch (Exception ex)
+        {
+            //Проверка исключения
+            switch (id)
+            {
+                case null: case -1: Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotFoundGeographyObjectCoordinate)); break;
+                case 1: Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.DeletedGeographyObjectCoordinate)); break;
                 default: throw;
             }
         }

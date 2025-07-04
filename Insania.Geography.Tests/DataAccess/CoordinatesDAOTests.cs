@@ -25,6 +25,13 @@ public class CoordinatesDAOTests : BaseTest
 {
     #region Поля
     /// <summary>
+    /// Логин пользователя, выполняющего действие
+    /// </summary>
+    private readonly string _username = "test";
+    #endregion
+
+    #region Зависимости
+    /// <summary>
     /// Сервис работы с данными координат
     /// </summary>
     private ICoordinatesDAO CoordinatesDAO { get; set; }
@@ -38,11 +45,6 @@ public class CoordinatesDAOTests : BaseTest
     /// Сервис преобразования полигона
     /// </summary>
     private IPolygonParserSL PolygonParserSL { get; set; }
-
-    /// <summary>
-    /// Логин пользователя, выполняющего действие
-    /// </summary>
-    private readonly string _username = "test";
     #endregion
 
     #region Общие методы
