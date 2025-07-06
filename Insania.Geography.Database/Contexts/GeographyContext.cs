@@ -111,7 +111,7 @@ public class GeographyContext : DbContext
         modelBuilder.Entity<GeographyObject>().HasAlternateKey(x => x.Alias);
 
         //Создание ограничения уникальности на координату географического объекта
-        modelBuilder.Entity<GeographyObjectCoordinate>().HasAlternateKey(x => new { x.CoordinateId, x.GeographyObjectId });
+        modelBuilder.Entity<GeographyObjectCoordinate>().HasIndex(x => new { x.CoordinateId, x.GeographyObjectId, x.DateDeleted }).IsUnique();
 
         //Добавление вторичного ключа для координат
         modelBuilder.Entity<GeographyObjectCoordinate>()

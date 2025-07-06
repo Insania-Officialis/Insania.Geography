@@ -9,6 +9,9 @@ public static class ErrorMessages
     public const string DeletedCoordinateType = "Указанный тип координаты удалён";
     public const string DeletedGeographyObject = "Указанный географический объект удалён";
     public const string DeletedGeographyObjectCoordinate = "Указанная координата географического объекта удалена";
+    public const string EmptyZoom = "Пустой коэффициент масштаба отображения сущности";
+    public const string ExistsGeographyObjectCoordinate = "Указанная координата географического объекта уже существует";
+    public const string IncorrectZoom = "Некорректный коэффициент масштаба отображения сущности";
     public const string NotChangesCoordinate = "Нет изменения координаты";
     public const string NotDeletedCoordinate = "Указанная координата не удалена";
     public const string NotDeletedGeographyObject = "Указанный географический объект удалён";

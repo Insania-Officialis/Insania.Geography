@@ -191,7 +191,9 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, GeographyConte
                     string[][] keys =
                     [
                         ["1", "Асфалия", "4", "", ""],
+                        ["2", "Эмбрия", "4", "", ""],
                         ["10000", "Удалённая", "1", "", DateTime.UtcNow.ToString()],
+                        ["10001", "Тестовая", "4", "", ""],
                     ];
 
                     //Проход по коллекции ключей
@@ -301,6 +303,7 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, GeographyConte
                     [
                         ["1", "[[[0,0],[0,5],[5,0],[0,0]]]", "1", DateTime.UtcNow.ToString()],
                         ["2", "[[[0,0],[0,5],[5,0],[0,0]]]", "4", ""],
+                        ["3", "[[[0,0],[0,5],[5,0],[0,0]]]", "4", ""],
                     ];
 
                     //Проход по коллекции ключей
@@ -361,6 +364,7 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, GeographyConte
                     [
                         ["1", "1", "1", DateTime.UtcNow.ToString()],
                         ["2", "2", "1", ""],
+                        ["3", "3", "10001", DateTime.UtcNow.ToString()],
                     ];
 
                     //Проход по коллекции ключей

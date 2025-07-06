@@ -3,6 +3,7 @@ using System;
 using Insania.Geography.Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Insania.Geography.Database.Migrations
 {
     [DbContext(typeof(GeographyContext))]
-    partial class GeographyContextModelSnapshot : ModelSnapshot
+    [Migration("20250706165525_EditFKGeographyObjectCoordinate_1")]
+    partial class EditFKGeographyObjectCoordinate_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -3,6 +3,7 @@ using System;
 using Insania.Geography.Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Insania.Geography.Database.Migrations
 {
     [DbContext(typeof(GeographyContext))]
-    partial class GeographyContextModelSnapshot : ModelSnapshot
+    [Migration("20250706164956_EditFKGeographyObjectCoordinate")]
+    partial class EditFKGeographyObjectCoordinate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,7 +122,7 @@ namespace Insania.Geography.Database.Migrations
                         .HasColumnName("center")
                         .HasComment("Координаты точки центра сущности");
 
-                    b.Property<long?>("CoordinateId")
+                    b.Property<long>("CoordinateId")
                         .HasColumnType("bigint")
                         .HasColumnName("coordinate_id")
                         .HasComment("Идентификатор координаты");
@@ -129,7 +132,7 @@ namespace Insania.Geography.Database.Migrations
                         .HasColumnName("date_create")
                         .HasComment("Дата создания");
 
-                    b.Property<DateTime?>("DateDeleted")
+                    b.Property<DateTime>("DateDeleted")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("date_deleted")
                         .HasComment("Дата удаления");
@@ -168,10 +171,9 @@ namespace Insania.Geography.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GeographyObjectId");
+                    b.HasAlternateKey("CoordinateId", "GeographyObjectId", "DateDeleted");
 
-                    b.HasIndex("CoordinateId", "GeographyObjectId", "DateDeleted")
-                        .IsUnique();
+                    b.HasIndex("GeographyObjectId");
 
                     b.ToTable("u_geography_objects_coordinates", "insania_geography", t =>
                         {
@@ -421,7 +423,9 @@ namespace Insania.Geography.Database.Migrations
                 {
                     b.HasOne("Insania.Shared.Entities.Coordinate", "CoordinateEntity")
                         .WithMany()
-                        .HasForeignKey("CoordinateId");
+                        .HasForeignKey("CoordinateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Insania.Geography.Entities.GeographyObject", "GeographyObjectEntity")
                         .WithMany()

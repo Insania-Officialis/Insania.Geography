@@ -167,7 +167,7 @@ services
     });
 
 //Добавление параметров преобразования моделей
-services.AddAutoMapper(typeof(GeographyMappingProfile));
+services.AddAutoMapper(cfg => cfg.AddProfile<GeographyMappingProfile>());
 
 //Построение веб-приложения
 WebApplication app = builder.Build();

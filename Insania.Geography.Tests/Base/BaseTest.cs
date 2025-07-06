@@ -74,7 +74,7 @@ public abstract class BaseTest
         services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(Log.Logger, dispose: true));
 
         //Добавление параметров преобразования моделей
-        services.AddAutoMapper(typeof(GeographyMappingProfile));
+        services.AddAutoMapper(cfg => cfg.AddProfile<GeographyMappingProfile>());
 
         //Добавление параметров инициализации данных
         IConfigurationSection? initializationDataSettings = configuration.GetSection("InitializationDataSettings");
