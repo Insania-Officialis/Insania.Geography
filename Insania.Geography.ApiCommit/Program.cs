@@ -82,6 +82,7 @@ services
 //Внедрение зависимостей сервисов
 services.AddSingleton(_ => configuration); //конфигурация
 services.AddScoped<ITransliterationSL, TransliterationSL>(); //сервис транслитерации
+services.AddScoped<IPolygonParserSL, PolygonParserSL>(); //сервис преобразования полигона
 services.AddGeographyBL(); //сервисы работы с бизнес-логикой в зоне географии
 
 //Добавление контекстов бд в коллекцию сервисов
@@ -124,7 +125,7 @@ services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Insania API", Version = "v1" });
 
-    var filePath = Path.Combine(AppContext.BaseDirectory, "Insania.Geography.ApiRead.xml");
+    var filePath = Path.Combine(AppContext.BaseDirectory, "Insania.Geography.ApiCommit.xml");
     options.IncludeXmlComments(filePath);
 
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

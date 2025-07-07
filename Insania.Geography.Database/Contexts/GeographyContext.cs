@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using Insania.Shared.Entities;
-
 using Insania.Geography.Entities;
+using Insania.Shared.Entities;
 
 namespace Insania.Geography.Database.Contexts;
 
@@ -118,6 +117,10 @@ public class GeographyContext : DbContext
             .HasOne(x => x.CoordinateEntity)
             .WithMany()
             .HasForeignKey(x => x.CoordinateId);
+
+        //Задание начальных идентификаторов
+        modelBuilder.Entity<GeographyObjectCoordinate>().Property(x => x.Id).HasIdentityOptions(startValue: 4);
+        modelBuilder.Entity<CoordinateGeography>().Property(x => x.Id).HasIdentityOptions(startValue: 4);
     }
     #endregion
 }

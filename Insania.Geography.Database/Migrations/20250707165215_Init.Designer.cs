@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Insania.Geography.Database.Migrations
 {
     [DbContext(typeof(GeographyContext))]
-    [Migration("20250706165525_EditFKGeographyObjectCoordinate_1")]
-    partial class EditFKGeographyObjectCoordinate_1
+    [Migration("20250707165215_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -110,6 +110,7 @@ namespace Insania.Geography.Database.Migrations
                         .HasComment("Первичный ключ таблицы");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<long>("Id"), 4L, null, null, null, null, null);
 
                     b.Property<double>("Area")
                         .HasColumnType("double precision")

@@ -3,9 +3,11 @@
 using Microsoft.Extensions.DependencyInjection;
 
 using Insania.Shared.Contracts.Services;
+using Insania.Shared.Models.Responses.Base;
 
 using Insania.Geography.Contracts.DataAccess;
 using Insania.Geography.Contracts.BusinessLogic;
+using Insania.Geography.Models.Requests.GeographyObjectsCoordinates;
 using Insania.Geography.Models.Responses.GeographyObjectsCoordinates;
 using Insania.Geography.Entities;
 using Insania.Geography.Tests.Base;
@@ -142,18 +144,22 @@ public class GeographyObjectsCoordinatesBLTests : BaseTest
             {
                 polygon = JsonSerializer.Deserialize<double[][][]>(coordinates);
             }
+            GeographyObjectsCoordinatesUpgradeRequest? request = new(geographyObjectId, coordinateId, polygon);
 
             //Получение результата
-            long? result = await GeographyObjectsCoordinatesBL.Upgrade(geographyObjectId, coordinateId, polygon, _username);
+            BaseResponse result = await GeographyObjectsCoordinatesBL.Upgrade(request, _username);
 
             //Получение значения после
-            GeographyObjectCoordinate? geographyObjectCoordinateAfter = await GeographyObjectsCoordinatesDAO.GetById(result);
+            GeographyObjectCoordinate? geographyObjectCoordinateAfter = await GeographyObjectsCoordinatesDAO.GetById(result?.Id);
 
             //Проверка результата
             switch (geographyObjectId, coordinateId, coordinates)
             {
                 case (1, 2, "[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]"):
-                    Assert.That(result, Is.Positive);
+                    Assert.That(result, Is.Not.Null);
+                    Assert.That(result?.Success, Is.True);
+                    Assert.That(result?.Id, Is.Not.Null);
+                    Assert.That(result?.Id, Is.Positive);
                     Assert.That(geographyObjectCoordinateBefore, Is.Not.Null);
                     Assert.That(geographyObjectCoordinateBefore?.GeographyObjectEntity, Is.Not.Null);
                     Assert.That(geographyObjectCoordinateBefore?.CoordinateEntity, Is.Not.Null);

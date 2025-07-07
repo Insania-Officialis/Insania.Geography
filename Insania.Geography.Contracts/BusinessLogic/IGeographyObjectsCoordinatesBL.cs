@@ -1,5 +1,6 @@
-﻿using NetTopologySuite.Geometries;
+﻿using Insania.Shared.Models.Responses.Base;
 
+using Insania.Geography.Models.Requests.GeographyObjectsCoordinates;
 using Insania.Geography.Models.Responses.GeographyObjectsCoordinates;
 
 namespace Insania.Geography.Contracts.BusinessLogic;
@@ -20,11 +21,10 @@ public interface IGeographyObjectsCoordinatesBL
     /// <summary>
     /// Метод актуализации координаты географического объекта
     /// </summary>
-    /// <param cref="long?" name="geographyObjectId">Идентификатор географического объекта</param>
-    /// <param cref="long?" name="coordinateId">Идентификатор координаты</param>
-    /// <param cref="double[][][]?" name="coordinates">Координаты</param>
+    /// <param cref="GeographyObjectsCoordinatesUpgradeRequest?" name="request">Модель запроса актуализации координаты географического объекта</param>
     /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
-    /// <returns cref="long?">Новый идентификатор координаты географического объекта</returns>
+    /// <returns cref="BaseResponse">Стандартный ответ</returns>
+    /// <remarks>Новый идентификатор координаты географического объекта</remarks>
     /// <exception cref="Exception">Исключение</exception>
-    Task<long?> Upgrade(long? geographyObjectId, long? coordinateId, double[][][]? coordinates, string username);
+    Task<BaseResponse> Upgrade(GeographyObjectsCoordinatesUpgradeRequest? request, string username);
 }

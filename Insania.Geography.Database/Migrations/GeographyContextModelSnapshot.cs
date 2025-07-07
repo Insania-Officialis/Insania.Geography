@@ -107,6 +107,7 @@ namespace Insania.Geography.Database.Migrations
                         .HasComment("Первичный ключ таблицы");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<long>("Id"), 4L, null, null, null, null, null);
 
                     b.Property<double>("Area")
                         .HasColumnType("double precision")
@@ -247,6 +248,7 @@ namespace Insania.Geography.Database.Migrations
                         .HasComment("Первичный ключ таблицы");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<long>("Id"), 4L, null, null, null, null, null);
 
                     b.Property<DateTime>("DateCreate")
                         .HasColumnType("timestamp without time zone")

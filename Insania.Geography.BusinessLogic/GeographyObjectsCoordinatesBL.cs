@@ -1,21 +1,18 @@
-﻿using Microsoft.Extensions.Logging;
-
-using AutoMapper;
-using NetTopologySuite.Geometries;
-
-using Insania.Shared.Contracts.Services;
-
+﻿using AutoMapper;
 using Insania.Geography.Contracts.BusinessLogic;
 using Insania.Geography.Contracts.DataAccess;
 using Insania.Geography.Database.Contexts;
 using Insania.Geography.Entities;
+using Insania.Geography.Models.Requests.GeographyObjectsCoordinates;
 using Insania.Geography.Models.Responses.GeographyObjectsCoordinates;
-
-using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
-
-using ErrorMessagesGeography = Insania.Geography.Messages.ErrorMessages;
-using InformationMessages = Insania.Geography.Messages.InformationMessages;
+using Insania.Shared.Contracts.Services;
+using Insania.Shared.Models.Responses.Base;
+using Microsoft.Extensions.Logging;
+using NetTopologySuite.Geometries;
 using System.Transactions;
+using ErrorMessagesGeography = Insania.Geography.Messages.ErrorMessages;
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+using InformationMessages = Insania.Geography.Messages.InformationMessages;
 
 namespace Insania.Geography.BusinessLogic;
 
@@ -114,13 +111,14 @@ public class GeographyObjectsCoordinatesBL(ILogger<GeographyObjectsCoordinatesBL
     /// <summary>
     /// Метод актуализации координаты географического объекта
     /// </summary>
-    /// <param cref="long?" name="geographyObjectId">Идентификатор географического объекта</param>
+    /// <param cref="GeographyObjectsCoordinatesUpgradeRequest?" name="request">Модель запроса актуализации координаты географического объекта</param>
     /// <param cref="long?" name="coordinateId">Идентификатор координаты</param>
     /// <param cref="double[][][]?" name="coordinates">Координаты</param>
     /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
-    /// <returns cref="long?">Новый идентификатор координаты географического объекта</returns>
+    /// <returns cref="BaseResponse">Стандартный ответ</returns>
+    /// <remarks>Новый идентификатор координаты географического объекта</remarks>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<long?> Upgrade(long? geographyObjectId, long? coordinateId, double[][][]? coordinates, string username)
+    public async Task<BaseResponse> Upgrade(GeographyObjectsCoordinatesUpgradeRequest? request, string username)
     {
         try
         {
@@ -128,21 +126,22 @@ public class GeographyObjectsCoordinatesBL(ILogger<GeographyObjectsCoordinatesBL
             _logger.LogInformation(InformationMessages.EnteredUpgradeGeographyObjectCoordinateMethod);
 
             //Проверки
-            if (geographyObjectId == null) throw new Exception(ErrorMessagesGeography.NotFoundGeographyObject);
-            if (coordinateId == null) throw new Exception(ErrorMessagesGeography.NotFoundCoordinate);
-            if (coordinates == null) throw new Exception(ErrorMessagesShared.EmptyCoordinates);
-            Polygon polygon = _polygonParserSL.FromDoubleArrayToPolygon(coordinates) ?? throw new Exception(ErrorMessagesShared.IncorrectCoordinates);
+            if (request == null) throw new Exception(ErrorMessagesShared.EmptyRequest);
+            if (request.GeographyObjectId == null) throw new Exception(ErrorMessagesGeography.NotFoundGeographyObject);
+            if (request.CoordinateId == null) throw new Exception(ErrorMessagesGeography.NotFoundCoordinate);
+            if (request.Coordinates == null) throw new Exception(ErrorMessagesShared.EmptyCoordinates);
+            Polygon polygon = _polygonParserSL.FromDoubleArrayToPolygon(request.Coordinates) ?? throw new Exception(ErrorMessagesShared.IncorrectCoordinates);
 
             //Получение данных
-            GeographyObject geographyObject = await _geographyObjectsDAO.GetById(geographyObjectId) ?? throw new Exception(ErrorMessagesGeography.NotFoundGeographyObject);
-            CoordinateGeography coordinate = await _coordinatesDAO.GetById(coordinateId) ?? throw new Exception(ErrorMessagesGeography.NotFoundCoordinate);
+            GeographyObject geographyObject = await _geographyObjectsDAO.GetById(request.GeographyObjectId) ?? throw new Exception(ErrorMessagesGeography.NotFoundGeographyObject);
+            CoordinateGeography coordinate = await _coordinatesDAO.GetById(request.CoordinateId) ?? throw new Exception(ErrorMessagesGeography.NotFoundCoordinate);
 
             //Проверки
             if (geographyObject.DateDeleted != null) throw new Exception(ErrorMessagesGeography.DeletedGeographyObject);
             if (coordinate.DateDeleted != null) throw new Exception(ErrorMessagesGeography.DeletedCoordinate);
 
             //Получение данных
-            GeographyObjectCoordinate geographyObjectCoordinateOld = await _geographyObjectsCoordinatesDAO.GetByGeographyObjectIdAndCoordinateId(geographyObjectId, coordinateId) ?? throw new Exception(ErrorMessagesGeography.NotFoundGeographyObjectCoordinate);
+            GeographyObjectCoordinate geographyObjectCoordinateOld = await _geographyObjectsCoordinatesDAO.GetByGeographyObjectIdAndCoordinateId(request.GeographyObjectId, request.CoordinateId) ?? throw new Exception(ErrorMessagesGeography.NotFoundGeographyObjectCoordinate);
 
             //Проверки
             if (geographyObjectCoordinateOld.DateDeleted != null) throw new Exception(ErrorMessagesGeography.DeletedGeographyObjectCoordinate);
@@ -170,7 +169,7 @@ public class GeographyObjectsCoordinatesBL(ILogger<GeographyObjectsCoordinatesBL
             transactionScope.Complete();
 
             //Возврат ответа
-            return result;
+            return new(true, result);
         }
         catch (Exception ex)
         {

@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Insania.Geography.Database.Migrations
 {
     [DbContext(typeof(GeographyContext))]
-    [Migration("20250630171707_Init")]
-    partial class Init
+    [Migration("20250707165551_Init_1")]
+    partial class Init_1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -110,6 +110,7 @@ namespace Insania.Geography.Database.Migrations
                         .HasComment("Первичный ключ таблицы");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<long>("Id"), 4L, null, null, null, null, null);
 
                     b.Property<double>("Area")
                         .HasColumnType("double precision")
@@ -122,7 +123,7 @@ namespace Insania.Geography.Database.Migrations
                         .HasColumnName("center")
                         .HasComment("Координаты точки центра сущности");
 
-                    b.Property<long>("CoordinateId")
+                    b.Property<long?>("CoordinateId")
                         .HasColumnType("bigint")
                         .HasColumnName("coordinate_id")
                         .HasComment("Идентификатор координаты");
@@ -171,9 +172,10 @@ namespace Insania.Geography.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("CoordinateId", "GeographyObjectId");
-
                     b.HasIndex("GeographyObjectId");
+
+                    b.HasIndex("CoordinateId", "GeographyObjectId", "DateDeleted")
+                        .IsUnique();
 
                     b.ToTable("u_geography_objects_coordinates", "insania_geography", t =>
                         {
@@ -249,6 +251,7 @@ namespace Insania.Geography.Database.Migrations
                         .HasComment("Первичный ключ таблицы");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<long>("Id"), 4L, null, null, null, null, null);
 
                     b.Property<DateTime>("DateCreate")
                         .HasColumnType("timestamp without time zone")
@@ -423,9 +426,7 @@ namespace Insania.Geography.Database.Migrations
                 {
                     b.HasOne("Insania.Shared.Entities.Coordinate", "CoordinateEntity")
                         .WithMany()
-                        .HasForeignKey("CoordinateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CoordinateId");
 
                     b.HasOne("Insania.Geography.Entities.GeographyObject", "GeographyObjectEntity")
                         .WithMany()
