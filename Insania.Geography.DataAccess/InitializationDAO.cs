@@ -319,7 +319,7 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, GeographyConte
                             DateTime? dateDeleted = null;
                             if (!string.IsNullOrWhiteSpace(key[3])) dateDeleted = DateTime.Parse(key[3]);
                             double[][][] coordinates = JsonSerializer.Deserialize<double[][][]>(key[1]) ?? throw new Exception(ErrorMessagesShared.EmptyCoordinates);
-                            Polygon polygon = _polygonParser.FromDoubleArrayToPolygon(coordinates);
+                            Polygon polygon = _polygonParser.FromDoubleArrayToPolygon(coordinates) ?? throw new Exception(ErrorMessagesShared.IncorrectCoordinates);
                             CoordinateGeography entity = new(long.Parse(key[0]), _username, true, polygon, type, dateDeleted);
 
                             //Добавление сущности в бд
