@@ -93,7 +93,7 @@ public class GeographyObjectsCoordinatesBL(ILogger<GeographyObjectsCoordinatesBL
             //Формирование ответа
             GeographyObjectsCoordinatesResponseList? response = null;
             if (data == null) response = new(false);
-            else response = new(true, geographyObject.Name, geographyObjectCoordinate.Center, geographyObjectCoordinate.Zoom, coordinates?.Select(_mapper.Map<GeographyObjectsCoordinatesResponseListItem>).ToList());
+            else response = new(true, geographyObject.Name, geographyObjectCoordinate.Center, geographyObjectCoordinate.Zoom, coordinates?.Select(x => new GeographyObjectsCoordinatesResponseListItem(_polygonParserSL.FromPolygonToDoubleArray(x?.PolygonEntity))).ToList());
 
             //Возврат ответа
             return response;

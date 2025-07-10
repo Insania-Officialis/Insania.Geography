@@ -19,8 +19,8 @@ public class GeographyObjectsCoordinatesResponseListItem
     /// <summary>
     /// Конструктор модели элемента ответа списком координат географических объектов
     /// </summary>
-    /// <param cref="Polygon" name="coordinates">Координаты</param>
-    public GeographyObjectsCoordinatesResponseListItem(Polygon coordinates)
+    /// <param cref="double[][][]?" name="coordinates">Координаты</param>
+    public GeographyObjectsCoordinatesResponseListItem(double[][][]? coordinates)
     {
         Coordinates = coordinates;
     }
@@ -30,6 +30,6 @@ public class GeographyObjectsCoordinatesResponseListItem
     /// <summary>
     /// Координаты
     /// </summary>
-    public Polygon? Coordinates { get; set; }
+    public double[][][]? Coordinates { get; set; }
     #endregion
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 
+using Insania.Shared.Contracts.Services;
 using Insania.Shared.Models.Responses.Base;
 
 using Insania.Geography.Entities;
@@ -19,8 +20,5 @@ public class GeographyMappingProfile : Profile
     {
         //Преобразование модели сущности географического объекта в базовую модель элемента ответа списком
         CreateMap<GeographyObject, BaseResponseListItem>();
-
-        //Преобразование модели сущности координаты в модель элемента ответа списком координат географических объектов
-        CreateMap<CoordinateGeography, GeographyObjectsCoordinatesResponseListItem>().ForMember(x => x.Coordinates, y => y.MapFrom(z => z.PolygonEntity));
     }
 }
