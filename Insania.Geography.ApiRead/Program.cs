@@ -82,6 +82,7 @@ services
 //Внедрение зависимостей сервисов
 services.AddSingleton(_ => configuration); //конфигурация
 services.AddScoped<ITransliterationSL, TransliterationSL>(); //сервис транслитерации
+services.AddScoped<IPolygonParserSL, PolygonParserSL>(); //сервис преобразования полигона
 services.AddGeographyBL(); //сервисы работы с бизнес-логикой в зоне географии
 
 //Добавление контекстов бд в коллекцию сервисов
