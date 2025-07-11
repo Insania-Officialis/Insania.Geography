@@ -8,12 +8,13 @@ namespace Insania.Geography.Models.Responses.GeographyObjectsCoordinates;
 /// Модель ответа списком координат географических объектов
 /// </summary>
 /// <param cref="bool" name="success">Признак успешности</param>
+/// <param cref="long?" name="id">Идентификатор географического объекта</param>
 /// <param cref="string?" name="name">Наименование географического объекта</param>
 /// <param cref="Point?" name="center">Центр географического объекта</param>
 /// <param cref="int?" name="zoom">Коэффициент масштаба отображения географического объекта</param>
 /// <param cref="List{GeographyObjectsCoordinatesResponseListItem}?" name="items">Список координат</param>
 
-public class GeographyObjectsCoordinatesResponseList(bool success, string? name = null, Point? center = null, int? zoom = null, List<GeographyObjectsCoordinatesResponseListItem>? items = null) : BaseResponse(success)
+public class GeographyObjectsCoordinatesResponseList(bool success, long? id = null, string? name = null, Point? center = null, int? zoom = null, List<GeographyObjectsCoordinatesResponseListItem>? items = null) : BaseResponse(success, id)
 {
     /// <summary>
     /// Наименование географического объекта

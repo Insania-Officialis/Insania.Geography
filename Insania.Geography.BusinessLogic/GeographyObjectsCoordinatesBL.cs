@@ -1,17 +1,23 @@
-﻿using AutoMapper;
+﻿using System.Transactions;
+
+using Microsoft.Extensions.Logging;
+
+using AutoMapper;
+using NetTopologySuite.Geometries;
+
+using Insania.Shared.Contracts.Services;
+using Insania.Shared.Models.Responses.Base;
+
 using Insania.Geography.Contracts.BusinessLogic;
 using Insania.Geography.Contracts.DataAccess;
 using Insania.Geography.Database.Contexts;
 using Insania.Geography.Entities;
 using Insania.Geography.Models.Requests.GeographyObjectsCoordinates;
 using Insania.Geography.Models.Responses.GeographyObjectsCoordinates;
-using Insania.Shared.Contracts.Services;
-using Insania.Shared.Models.Responses.Base;
-using Microsoft.Extensions.Logging;
-using NetTopologySuite.Geometries;
-using System.Transactions;
-using ErrorMessagesGeography = Insania.Geography.Messages.ErrorMessages;
+
 using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
+using ErrorMessagesGeography = Insania.Geography.Messages.ErrorMessages;
 using InformationMessages = Insania.Geography.Messages.InformationMessages;
 
 namespace Insania.Geography.BusinessLogic;
@@ -88,12 +94,11 @@ public class GeographyObjectsCoordinatesBL(ILogger<GeographyObjectsCoordinatesBL
                 .OrderByDescending(x => x.Area)
                 .FirstOrDefault() ?? throw new Exception(ErrorMessagesGeography.NotFoundGeographyObjectCoordinate);
             GeographyObject geographyObject = geographyObjectCoordinate.GeographyObjectEntity ?? throw new Exception(ErrorMessagesGeography.NotFoundGeographyObject);
-            List<CoordinateGeography?> coordinates = [.. data.Select(x => x.CoordinateEntity as CoordinateGeography)];
 
             //Формирование ответа
             GeographyObjectsCoordinatesResponseList? response = null;
             if (data == null) response = new(false);
-            else response = new(true, geographyObject.Name, geographyObjectCoordinate.Center, geographyObjectCoordinate.Zoom, coordinates?.Select(x => new GeographyObjectsCoordinatesResponseListItem(_polygonParserSL.FromPolygonToDoubleArray(x?.PolygonEntity))).ToList());
+            else response = new(true, geographyObject.Id, geographyObject.Name, geographyObjectCoordinate.Center, geographyObjectCoordinate.Zoom, data?.Select(x => new GeographyObjectsCoordinatesResponseListItem(x.Id, x.CoordinateId, _polygonParserSL.FromPolygonToDoubleArray(x?.CoordinateEntity?.PolygonEntity))).ToList());
 
             //Возврат ответа
             return response;
