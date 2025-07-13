@@ -6,7 +6,9 @@
 /// <param cref="long?" name="id">Идентификатор координаты географического объекта</param>
 /// <param cref="long?" name="coordinateId">Идентификатор координаты</param>
 /// <param cref="double[][][]?" name="coordinates">Координаты</param>
-public class GeographyObjectsCoordinatesResponseListItem(long? id = null, long? coordinateId = null, double[][][]? coordinates = null)
+/// <param cref="string?" name="backgroundColor">Цвет фона</param>
+/// <param cref="string?" name="borderColor">Цвет границ</param>
+public class GeographyObjectsCoordinatesResponseListItem(long? id = null, long? coordinateId = null, double[][][]? coordinates = null, string? backgroundColor = null, string? borderColor = null)
 {
     #region Поля
     /// <summary>
@@ -23,5 +25,15 @@ public class GeographyObjectsCoordinatesResponseListItem(long? id = null, long? 
     /// Координаты
     /// </summary>
     public double[][][]? Coordinates { get; set; } = coordinates;
+
+    /// <summary>
+    /// Цвет фона
+    /// </summary>
+    public string? BackgroundColor { get; set; } = backgroundColor;
+
+    /// <summary>
+    /// Цвет границ
+    /// </summary>
+    public string? BorderColor { get; set; } = borderColor;
     #endregion
 }

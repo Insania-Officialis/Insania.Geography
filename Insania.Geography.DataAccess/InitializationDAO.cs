@@ -253,10 +253,10 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, GeographyConte
                     //Создание коллекции сущностей
                     List<CoordinateTypeGeography> entities =
                     [
-                        new(_transliteration, 1, _username, "Удалённый", DateTime.UtcNow),
-                        new(_transliteration, 2, _username, "Океаны", null),
-                        new(_transliteration, 3, _username, "Моря", null),
-                        new(_transliteration, 4, _username, "Материки", null),
+                        new(_transliteration, 1, _username, "Удалённый", "", "", DateTime.UtcNow),
+                        new(_transliteration, 2, _username, "Океаны", "#E0E1DC", "#000000", null),
+                        new(_transliteration, 3, _username, "Моря", "#E0E1DC", "#000000", null),
+                        new(_transliteration, 4, _username, "Материки", "#FFFFFF", "#000000", null),
                     ];
 
                     //Проход по коллекции сущностей

@@ -159,6 +159,7 @@ public class GeographyObjectsCoordinatesDAO(ILogger<GeographyObjectsCoordinatesD
             List<GeographyObjectCoordinate> data = await _context.GeographyObjectsCoordinates
                 .Include(x => x.GeographyObjectEntity)
                 .Include(x => x.CoordinateEntity)
+                .ThenInclude(y => y != null ? y.TypeEntity : null)
                 .Where(x => x.DateDeleted == null && x.GeographyObjectId == geographyObjectId)
                 .ToListAsync();
 

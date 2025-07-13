@@ -29,8 +29,10 @@ public class CoordinateTypeGeography : CoordinateType
     /// <param cref="ITransliterationSL" name="transliteration">Сервис транслитерации</param>
     /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
     /// <param cref="string" name="name">Наименование</param>
+    /// <param cref="string" name="backgroundColor">Цвет фона</param>
+    /// <param cref="string" name="borderColor">Цвет границ</param>
     /// <param cref="DateTime?" name="dateDeleted">Дата удаления</param>
-    public CoordinateTypeGeography(ITransliterationSL transliteration, string username, string name, DateTime? dateDeleted = null) : base(transliteration, username, name, dateDeleted)
+    public CoordinateTypeGeography(ITransliterationSL transliteration, string username, string name, string backgroundColor, string borderColor, DateTime? dateDeleted = null) : base(transliteration, username, name, backgroundColor, borderColor, dateDeleted)
     {
 
     }
@@ -42,8 +44,10 @@ public class CoordinateTypeGeography : CoordinateType
     /// <param cref="long" name="id">Первичный ключ таблицы</param>
     /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
     /// <param cref="string" name="name">Наименование</param>
+    /// <param cref="string" name="backgroundColor">Цвет фона</param>
+    /// <param cref="string" name="borderColor">Цвет границ</param>
     /// <param cref="DateTime?" name="dateDeleted">Дата удаления</param>
-    public CoordinateTypeGeography(ITransliterationSL transliteration, long id, string username, string name, DateTime? dateDeleted = null) : base(transliteration, id, username, name, dateDeleted)
+    public CoordinateTypeGeography(ITransliterationSL transliteration, long id, string username, string name, string backgroundColor, string borderColor, DateTime? dateDeleted = null) : base(transliteration, id, username, name, backgroundColor, borderColor, dateDeleted)
     {
 
     }

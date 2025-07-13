@@ -98,7 +98,7 @@ public class GeographyObjectsCoordinatesBL(ILogger<GeographyObjectsCoordinatesBL
             //Формирование ответа
             GeographyObjectsCoordinatesResponseList? response = null;
             if (data == null) response = new(false);
-            else response = new(true, geographyObject.Id, geographyObject.Name, geographyObjectCoordinate.Center, geographyObjectCoordinate.Zoom, data?.Select(x => new GeographyObjectsCoordinatesResponseListItem(x.Id, x.CoordinateId, _polygonParserSL.FromPolygonToDoubleArray(x?.CoordinateEntity?.PolygonEntity))).ToList());
+            else response = new(true, geographyObject.Id, geographyObject.Name, geographyObjectCoordinate.Center, geographyObjectCoordinate.Zoom, data?.Select(x => new GeographyObjectsCoordinatesResponseListItem(x.Id, x.CoordinateId, _polygonParserSL.FromPolygonToDoubleArray(x?.CoordinateEntity?.PolygonEntity), x?.CoordinateEntity?.TypeEntity?.BackgroundColor, x?.CoordinateEntity?.TypeEntity?.BorderColor)).ToList());
 
             //Возврат ответа
             return response;
