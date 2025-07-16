@@ -119,8 +119,8 @@ public class GeographyContext : DbContext
             .HasForeignKey(x => x.CoordinateId);
 
         //Задание начальных идентификаторов
-        modelBuilder.Entity<GeographyObjectCoordinate>().Property(x => x.Id).HasIdentityOptions(startValue: 4);
-        modelBuilder.Entity<CoordinateGeography>().Property(x => x.Id).HasIdentityOptions(startValue: 4);
+        modelBuilder.Entity<GeographyObjectCoordinate>().Property(x => x.Id).HasIdentityOptions(startValue: 5);
+        modelBuilder.Entity<CoordinateGeography>().Property(x => x.Id).HasIdentityOptions(startValue: 5);
     }
     #endregion
 }

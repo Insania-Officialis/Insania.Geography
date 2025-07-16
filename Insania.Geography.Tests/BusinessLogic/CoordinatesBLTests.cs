@@ -81,7 +81,7 @@ public class CoordinatesBLTests : BaseTest
     [TestCase(-1, null)]
     [TestCase(-1, "[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]")]
     [TestCase(1, "[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]")]
-    [TestCase(2, "[[[0, 0],[0, 5],[5, 0],[0, 0]]]")]
+    [TestCase(3, "[[[0,0],[0,5],[5,0],[0,0]]]")]
     [TestCase(2, "[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]")]
     public async Task EditTest(long? id, string? coordinates)
     {
@@ -137,7 +137,7 @@ public class CoordinatesBLTests : BaseTest
                 case (-1, "[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotFoundCoordinate)); break;
                 case (-1, null): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesShared.EmptyCoordinates)); break;
                 case (1, "[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.DeletedCoordinate)); break;
-                case (2, "[[[0, 0],[0, 5],[5, 0],[0, 0]]]"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotChangesCoordinate)); break;
+                case (3, "[[[0,0],[0,5],[5,0],[0,0]]]"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotChangesCoordinate)); break;
                 default: throw;
             }
         }

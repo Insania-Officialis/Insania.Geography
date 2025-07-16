@@ -144,6 +144,7 @@ public class GeographyObjectsCoordinatesBL(ILogger<GeographyObjectsCoordinatesBL
             //Проверки
             if (geographyObject.DateDeleted != null) throw new Exception(ErrorMessagesGeography.DeletedGeographyObject);
             if (coordinate.DateDeleted != null) throw new Exception(ErrorMessagesGeography.DeletedCoordinate);
+            if (coordinate.PolygonEntity == polygon) throw new Exception(ErrorMessagesGeography.NotChangesCoordinate);
 
             //Получение данных
             GeographyObjectCoordinate geographyObjectCoordinateOld = await _geographyObjectsCoordinatesDAO.GetByGeographyObjectIdAndCoordinateId(request.GeographyObjectId, request.CoordinateId) ?? throw new Exception(ErrorMessagesGeography.NotFoundGeographyObjectCoordinate);

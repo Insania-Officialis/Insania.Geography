@@ -127,8 +127,9 @@ public class GeographyObjectsCoordinatesBLTests : BaseTest
     [TestCase(10000, -1, "[[[0,0],[0,5],[5,0],[0,0]]]")]
     [TestCase(10000, 1, "[[[0,0],[0,5],[5,0],[0,0]]]")]
     [TestCase(1, 1, "[[[0,0],[0,5],[5,0],[0,0]]]")]
-    [TestCase(1, 3, "[[[0,0],[0,5],[5,0],[0,0]]]")]
-    [TestCase(10001, 3, "[[[0,0],[0,5],[5,0],[0,0]]]")]
+    [TestCase(1, 3, "[[[0,0],[0,5],[5,5],[5,0],[0,0]]]")]
+    [TestCase(10001, 3, "[[[0,0],[0,5],[5,5],[5,0],[0,0]]]")]
+    [TestCase(4, 3, "[[[0,0],[0,5],[5,0],[0,0]]]")]
     [TestCase(1, 2, "[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]")]
     public async Task UpgradeTest(long? geographyObjectId, long? coordinateId, string? coordinates)
     {
@@ -191,9 +192,10 @@ public class GeographyObjectsCoordinatesBLTests : BaseTest
                 case (-1, -1, "[[[0, 0],[0, 5],[5, 0]]]"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesShared.IncorrectCoordinates)); break;
                 case (10000, 1, "[[[0,0],[0,5],[5,0],[0,0]]]"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.DeletedGeographyObject)); break;
                 case (1, 1, "[[[0,0],[0,5],[5,0],[0,0]]]"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.DeletedCoordinate)); break;
-                case (1, 3, "[[[0,0],[0,5],[5,0],[0,0]]]"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotFoundGeographyObjectCoordinate)); break;
-                case (10001, 3, "[[[0,0],[0,5],[5,0],[0,0]]]"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.DeletedGeographyObjectCoordinate)); break;
+                case (1, 3, "[[[0,0],[0,5],[5,5],[5,0],[0,0]]]"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotFoundGeographyObjectCoordinate)); break;
+                case (10001, 3, "[[[0,0],[0,5],[5,5],[5,0],[0,0]]]"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.DeletedGeographyObjectCoordinate)); break;
                 case (2, 1, "[[[0,0],[0,5],[5,0],[0,0]]]"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.ExistsGeographyObjectCoordinate)); break;
+                case (4, 3, "[[[0,0],[0,5],[5,0],[0,0]]]"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotChangesCoordinate)); break;
                 default: throw;
             }
         }
