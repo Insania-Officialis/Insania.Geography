@@ -10,8 +10,10 @@ public interface IGeographyObjectsBL
     /// <summary>
     /// Метод получения списка географических объектов
     /// </summary>
+    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
+    /// <param cref="long?" name="typeId">Идентификатор типа</param>
     /// <returns cref="BaseResponseList">Стандартный ответ</returns>
     /// <remarks>Список географических объектов</remarks>
     /// <exception cref="Exception">Исключение</exception>
-    Task<BaseResponseList> GetList();
+    Task<BaseResponseList> GetList(bool? hasCoordinates = null, long? typeId = null);
 }

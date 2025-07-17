@@ -68,21 +68,32 @@ public class GeographyObjectsDAO(ILogger<GeographyObjectsDAO> logger, GeographyC
     }
 
     /// <summary>
-    /// Метод получения списка географических объектов
+    /// Метод получения списка географических объектов с проверкой наличия координат
     /// </summary>
+    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
+    /// <param cref="long?" name="typeId">Идентификатор типа</param>
     /// <returns cref="List{GeographyObject}">Список географических объектов</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<List<GeographyObject>> GetList()
+    public async Task<List<GeographyObject>> GetList(bool? hasCoordinates = null, long? typeId = null)
     {
         try
         {
             //Логгирование
             _logger.LogInformation(InformationMessages.EnteredGetListGeographyObjectsMethod);
 
+            //Формирование запроса
+            IQueryable<GeographyObject> query = _context.GeographyObjects.Where(x => x.DateDeleted == null);
+            if (hasCoordinates.HasValue) query = query
+                    .Include(x => x.GeographyObjectCoordinates)
+                    .Where(x => (hasCoordinates ?? false)
+                        ? x.GeographyObjectCoordinates != null &&
+                          x.GeographyObjectCoordinates.Any(y => y.DateDeleted == null)
+                        : x.GeographyObjectCoordinates == null ||
+                          !x.GeographyObjectCoordinates.Any(y => y.DateDeleted == null));
+            if (typeId.HasValue) query = query.Where(x => x.TypeId == typeId);
+
             //Получение данных из бд
-            List<GeographyObject> data = await _context.GeographyObjects
-                .Where(x => x.DateDeleted == null)
-                .ToListAsync();
+            List<GeographyObject> data = await query.ToListAsync();
 
             //Возврат результата
             return data;

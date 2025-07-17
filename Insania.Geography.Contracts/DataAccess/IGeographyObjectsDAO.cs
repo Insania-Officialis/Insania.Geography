@@ -18,9 +18,11 @@ public interface IGeographyObjectsDAO
     /// <summary>
     /// Метод получения списка географических объектов
     /// </summary>
+    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
+    /// <param cref="long?" name="typeId">Идентификатор типа</param>
     /// <returns cref="List{GeographyObject}">Список географических объектов</returns>
     /// <exception cref="Exception">Исключение</exception>
-    Task<List<GeographyObject>> GetList();
+    Task<List<GeographyObject>> GetList(bool? hasCoordinates = null, long? typeId = null);
 
     /// <summary>
     /// Метод восстановления географического объекта

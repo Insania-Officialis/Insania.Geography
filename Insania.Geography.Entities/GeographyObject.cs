@@ -100,6 +100,11 @@ public class GeographyObject : Compendium
     /// Навигационное свойство родителя
     /// </summary>
     public GeographyObject? ParentEntity { get; private set; }
+
+    /// <summary>
+    /// Навигационное свойство координат географического объекта
+    /// </summary>
+    public ICollection<GeographyObjectCoordinate>? GeographyObjectCoordinates { get; private set; }
     #endregion
 
     #region Методы

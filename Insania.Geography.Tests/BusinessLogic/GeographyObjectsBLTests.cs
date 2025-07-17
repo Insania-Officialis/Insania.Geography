@@ -5,6 +5,8 @@ using Insania.Shared.Models.Responses.Base;
 using Insania.Geography.Contracts.BusinessLogic;
 using Insania.Geography.Tests.Base;
 
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
 namespace Insania.Geography.Tests.BusinessLogic;
 
 /// <summary>
@@ -55,12 +57,81 @@ public class GeographyObjectsBLTests : BaseTest
 
             //Проверка результата
             Assert.That(result, Is.Not.Null);
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(result.Success, Is.True);
                 Assert.That(result.Items, Is.Not.Null);
                 Assert.That(result.Items, Is.Not.Empty);
-            });
+            }
+        }
+        catch (Exception)
+        {
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Тест метода получения списка географических объектов с проверкой наличия координат
+    /// </summary>
+    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task GetListWithCheckCoordinatesTest(bool hasCoordinates)
+    {
+        try
+        {
+            //Получение результата
+            BaseResponseList? result = await GeographyObjectsBL.GetList(hasCoordinates);
+
+            //Проверка результата
+            Assert.That(result, Is.Not.Null);
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(result.Success, Is.True);
+                Assert.That(result.Items, Is.Not.Null);
+                Assert.That(result.Items, Is.Not.Empty);
+            }
+        }
+        catch (Exception)
+        {
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Тест метода получения списка географических объектов с проверкой наличия координат
+    /// </summary>
+    /// <param cref="long?" name="typeId">Идентификатор типа</param>
+    [TestCase(-1)]
+    [TestCase(1)]
+    [TestCase(4)]
+    public async Task GetListWithTypeTest(long typeId)
+    {
+        try
+        {
+            //Получение результата
+            BaseResponseList? result = await GeographyObjectsBL.GetList(typeId: typeId);
+
+            //Проверка результата
+            Assert.That(result, Is.Not.Null);
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(result.Success, Is.True);
+                Assert.That(result.Items, Is.Not.Null);
+            }
+            switch (typeId)
+            {
+                case -1:
+                case 1:
+                    Assert.That(result.Items, Is.Empty);
+                    break;
+                case 4:
+                    Assert.That(result.Items, Is.Not.Empty);
+                    break;
+                default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
+            }
         }
         catch (Exception)
         {

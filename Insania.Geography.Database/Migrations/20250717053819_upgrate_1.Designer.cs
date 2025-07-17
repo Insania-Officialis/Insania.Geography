@@ -3,6 +3,7 @@ using System;
 using Insania.Geography.Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Insania.Geography.Database.Migrations
 {
     [DbContext(typeof(GeographyContext))]
-    partial class GeographyContextModelSnapshot : ModelSnapshot
+    [Migration("20250717053819_upgrate_1")]
+    partial class upgrate_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -434,7 +437,7 @@ namespace Insania.Geography.Database.Migrations
                         .HasForeignKey("CoordinateId");
 
                     b.HasOne("Insania.Geography.Entities.GeographyObject", "GeographyObjectEntity")
-                        .WithMany("GeographyObjectCoordinates")
+                        .WithMany()
                         .HasForeignKey("GeographyObjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -451,11 +454,6 @@ namespace Insania.Geography.Database.Migrations
                         .HasForeignKey("TypeId");
 
                     b.Navigation("TypeEntity");
-                });
-
-            modelBuilder.Entity("Insania.Geography.Entities.GeographyObject", b =>
-                {
-                    b.Navigation("GeographyObjectCoordinates");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,14 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
 using Insania.Geography.Contracts.DataAccess;
-using Insania.Geography.DataAccess;
+using Insania.Shared.Contracts.Services;
 using Insania.Geography.Entities;
 using Insania.Geography.Tests.Base;
 
 using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
 
 using ErrorMessagesGeography = Insania.Geography.Messages.ErrorMessages;
-using Insania.Shared.Contracts.Services;
 
 namespace Insania.Geography.Tests.DataAccess;
 
@@ -106,6 +105,64 @@ public class GeographyObjectsDAOTests : BaseTest
             //Проверка результата
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.Not.Empty);
+        }
+        catch (Exception)
+        {
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Тест метода получения списка географических объектов с проверкой наличия координат
+    /// </summary>
+    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task GetListWithCheckCoordinatesTest(bool hasCoordinates)
+    {
+        try
+        {
+            //Получение результата
+            List<GeographyObject>? result = await GeographyObjectsDAO.GetList(hasCoordinates: hasCoordinates);
+
+            //Проверка результата
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.Not.Empty);
+        }
+        catch (Exception)
+        {
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Тест метода получения списка географических объектов с проверкой наличия координат
+    /// </summary>
+    /// <param cref="long?" name="typeId">Идентификатор типа</param>
+    [TestCase(-1)]
+    [TestCase(1)]
+    [TestCase(4)]
+    public async Task GetListWithTypeTest(long typeId)
+    {
+        try
+        {
+            //Получение результата
+            List<GeographyObject>? result = await GeographyObjectsDAO.GetList(typeId: typeId);
+
+            //Проверка результата
+            Assert.That(result, Is.Not.Null);
+            switch (typeId)
+            {
+                case -1: case 1:
+                    Assert.That(result, Is.Empty);
+                    break;
+                case 4:
+                    Assert.That(result, Is.Not.Empty);
+                    break;
+                default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
+            }
         }
         catch (Exception)
         {

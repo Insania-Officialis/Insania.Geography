@@ -9,6 +9,7 @@ using Insania.Geography.Contracts.DataAccess;
 using Insania.Geography.Entities;
 
 using ErrorMessages = Insania.Shared.Messages.ErrorMessages;
+
 using InformationMessages = Insania.Geography.Messages.InformationMessages;
 
 namespace Insania.Geography.BusinessLogic;
@@ -42,9 +43,11 @@ public class GeographyObjectsBL(ILogger<GeographyObjectsBL> logger, IMapper mapp
     /// <summary>
     /// Метод получения списка географических объектов
     /// </summary>
+    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
+    /// <param cref="long?" name="typeId">Идентификатор типа</param>
     /// <returns cref="BaseResponseList">Стандартный ответ</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<BaseResponseList> GetList()
+    public async Task<BaseResponseList> GetList(bool? hasCoordinates = null, long? typeId = null)
     {
         try
         {
@@ -52,7 +55,7 @@ public class GeographyObjectsBL(ILogger<GeographyObjectsBL> logger, IMapper mapp
             _logger.LogInformation(InformationMessages.EnteredGetListGeographyObjectsMethod);
 
             //Получение данных
-            List<GeographyObject>? data = await _geographyObjectsDAO.GetList();
+            List<GeographyObject>? data = await _geographyObjectsDAO.GetList(hasCoordinates, typeId);
 
             //Формирование ответа
             BaseResponseList? response = null;
