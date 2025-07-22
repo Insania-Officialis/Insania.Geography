@@ -101,7 +101,7 @@ public class GeographyObjectsBLTests : BaseTest
     }
 
     /// <summary>
-    /// Тест метода получения списка географических объектов с проверкой наличия координат
+    /// Тест метода получения списка географических объектов по типу
     /// </summary>
     /// <param cref="long?" name="typeId">Идентификатор типа</param>
     [TestCase(-1)]
@@ -128,6 +128,48 @@ public class GeographyObjectsBLTests : BaseTest
                     Assert.That(result.Items, Is.Empty);
                     break;
                 case 4:
+                    Assert.That(result.Items, Is.Not.Empty);
+                    break;
+                default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
+            }
+        }
+        catch (Exception)
+        {
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Тест метода получения списка географических объектов по массиву типов
+    /// </summary>
+    /// <param cref="long[]?" name="typeIds">Идентификаторы типов</param>
+    [TestCase(new long[] { -1 })]
+    [TestCase(new long[] { 1 })]
+    [TestCase(new long[] { 4 })]
+    [TestCase(new long[] { 4, 6 })]
+    public async Task GetListWithTypesTest(long[] typeIds)
+    {
+        try
+        {
+            //Получение результата
+            BaseResponseList? result = await GeographyObjectsBL.GetList(typeIds: typeIds);
+
+            //Проверка результата
+            Assert.That(result, Is.Not.Null);
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(result.Success, Is.True);
+                Assert.That(result.Items, Is.Not.Null);
+            }
+            switch (typeIds)
+            {
+                case [-1]:
+                case [1]:
+                    Assert.That(result.Items, Is.Empty);
+                    break;
+                case [4]:
+                case [4, 6]:
                     Assert.That(result.Items, Is.Not.Empty);
                     break;
                 default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);

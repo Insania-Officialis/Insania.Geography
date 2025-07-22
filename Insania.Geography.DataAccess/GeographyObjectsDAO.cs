@@ -72,9 +72,10 @@ public class GeographyObjectsDAO(ILogger<GeographyObjectsDAO> logger, GeographyC
     /// </summary>
     /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
     /// <param cref="long?" name="typeId">Идентификатор типа</param>
+    /// <param cref="long[]?" name="typeIds">Идентификаторы типов</param>
     /// <returns cref="List{GeographyObject}">Список географических объектов</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<List<GeographyObject>> GetList(bool? hasCoordinates = null, long? typeId = null)
+    public async Task<List<GeographyObject>> GetList(bool? hasCoordinates = null, long? typeId = null, long[]? typeIds = null)
     {
         try
         {
@@ -91,6 +92,7 @@ public class GeographyObjectsDAO(ILogger<GeographyObjectsDAO> logger, GeographyC
                         : x.GeographyObjectCoordinates == null ||
                           !x.GeographyObjectCoordinates.Any(y => y.DateDeleted == null));
             if (typeId.HasValue) query = query.Where(x => x.TypeId == typeId);
+            if (typeIds?.Length > 0) query = query.Where(x => typeIds.Contains(x.TypeId));
 
             //Получение данных из бд
             List<GeographyObject> data = await query.ToListAsync();

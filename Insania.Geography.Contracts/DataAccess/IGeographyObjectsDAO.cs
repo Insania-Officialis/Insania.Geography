@@ -20,9 +20,10 @@ public interface IGeographyObjectsDAO
     /// </summary>
     /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
     /// <param cref="long?" name="typeId">Идентификатор типа</param>
+    /// <param cref="long[]?" name="typeIds">Идентификаторы типов</param>
     /// <returns cref="List{GeographyObject}">Список географических объектов</returns>
     /// <exception cref="Exception">Исключение</exception>
-    Task<List<GeographyObject>> GetList(bool? hasCoordinates = null, long? typeId = null);
+    Task<List<GeographyObject>> GetList(bool? hasCoordinates = null, long? typeId = null, long[]? typeIds = null);
 
     /// <summary>
     /// Метод восстановления географического объекта

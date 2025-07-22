@@ -45,9 +45,10 @@ public class GeographyObjectsBL(ILogger<GeographyObjectsBL> logger, IMapper mapp
     /// </summary>
     /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
     /// <param cref="long?" name="typeId">Идентификатор типа</param>
+    /// <param cref="long[]?" name="typeIds">Идентификаторы типов</param>
     /// <returns cref="BaseResponseList">Стандартный ответ</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<BaseResponseList> GetList(bool? hasCoordinates = null, long? typeId = null)
+    public async Task<BaseResponseList> GetList(bool? hasCoordinates = null, long? typeId = null, long[]? typeIds = null)
     {
         try
         {
@@ -55,7 +56,7 @@ public class GeographyObjectsBL(ILogger<GeographyObjectsBL> logger, IMapper mapp
             _logger.LogInformation(InformationMessages.EnteredGetListGeographyObjectsMethod);
 
             //Получение данных
-            List<GeographyObject>? data = await _geographyObjectsDAO.GetList(hasCoordinates, typeId);
+            List<GeographyObject>? data = await _geographyObjectsDAO.GetList(hasCoordinates, typeId, typeIds);
 
             //Формирование ответа
             BaseResponseList? response = null;
