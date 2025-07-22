@@ -33,17 +33,17 @@ public class GeographyObjectsController(ILogger<GeographyObjectsController> logg
     /// </summary>
     /// <param cref="bool" name="has_coordinates">Проверка наличия координат</param>
     /// <param cref="long" name="type_id">Идентификатор типа</param>
-    /// <param cref="IEnumerable{Int64}" name="typeIds">Идентификаторы типов</param>
+    /// <param cref="IEnumerable{Int64}" name="type_ids">Идентификаторы типов</param>
     /// <returns cref="OkResult">Список географических объектов</returns>
     /// <returns cref="BadRequestResult">Ошибка</returns>
     [HttpGet]
     [Route("list")]
-    public async Task<IActionResult> GetList([FromQuery] bool? has_coordinates = null, [FromQuery] long? type_id = null, [FromQuery] long[]? typeIds = null)
+    public async Task<IActionResult> GetList([FromQuery] bool? has_coordinates = null, [FromQuery] long? type_id = null, [FromQuery] long[]? type_ids = null)
     {
         try
         {
             //Получение результата
-            BaseResponse? result = await _geographyObjectsBL.GetList(has_coordinates, type_id, typeIds?.ToArray());
+            BaseResponse? result = await _geographyObjectsBL.GetList(has_coordinates, type_id, type_ids?.ToArray());
 
             //Возврат ответа
             return Ok(result);
