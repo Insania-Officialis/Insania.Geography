@@ -148,6 +148,7 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, GeographyConte
                         new(_transliteration, 4, _username, "Материк", null),
                         new(_transliteration, 5, _username, "Архипелаг", null),
                         new(_transliteration, 6, _username, "Остров", null),
+                        new(_transliteration, 7, _username, "Континент", null),
                     ];
 
                     //Проход по коллекции сущностей
