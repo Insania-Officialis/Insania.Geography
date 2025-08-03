@@ -87,11 +87,9 @@ public class GeographyObjectsBLTests : BaseTest
             //Проверка результата
             Assert.That(result, Is.Not.Null);
             using (Assert.EnterMultipleScope())
-            {
-                Assert.That(result.Success, Is.True);
-                Assert.That(result.Items, Is.Not.Null);
-                Assert.That(result.Items, Is.Not.Empty);
-            }
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Items, Is.Not.Null);
+            Assert.That(result.Items, Is.Not.Empty);
         }
         catch (Exception)
         {
