@@ -177,6 +177,54 @@ public class GeographyObjectsCoordinatesDAO(ILogger<GeographyObjectsCoordinatesD
     }
 
     /// <summary>
+    /// Метод добавления координаты географического объекта
+    /// </summary>
+    /// <param cref="GeographyObject?" name="geographyObject">Географический объект</param>
+    /// <param cref="CoordinateGeography?" name="coordinate">Координаты</param>
+    /// <param cref="int?" name="zoom">Коэффициент масштаба отображения сущности</param>
+    /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
+    /// <returns cref="long?">Идентификатор координаты географического объекта</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<long?> Add(GeographyObject? geographyObject, CoordinateGeography? coordinate, int? zoom, string username)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredAddGeographyObjectCoordinateMethod);
+
+            //Проверки
+            if (geographyObject == null) throw new Exception(ErrorMessagesGeography.NotFoundGeographyObject);
+            if (coordinate == null) throw new Exception(ErrorMessagesGeography.NotFoundCoordinate);
+            if (zoom == null) throw new Exception(ErrorMessagesGeography.EmptyZoom);
+            if (geographyObject.DateDeleted != null) throw new Exception(ErrorMessagesGeography.DeletedGeographyObject);
+            if (coordinate.DateDeleted != null) throw new Exception(ErrorMessagesGeography.DeletedCoordinate);
+            if (zoom < 3 || zoom > 24) throw new Exception(ErrorMessagesGeography.IncorrectZoom);
+
+            //Получение данных из бд
+            GeographyObjectCoordinate? data = await GetByGeographyObjectIdAndCoordinateId(geographyObject.Id, coordinate.Id);
+
+            //Проверки
+            if (data != null) throw new Exception(ErrorMessagesGeography.ExistsGeographyObjectCoordinate);
+
+            //Запись данных в бд
+            GeographyObjectCoordinate geographyObjectCoordinate = new(username, false, coordinate.PolygonEntity.InteriorPoint, coordinate.PolygonEntity.Area, zoom ?? 3, coordinate, geographyObject);
+            await _context.GeographyObjectsCoordinates.AddAsync(geographyObjectCoordinate);
+            await _context.SaveChangesAsync();
+
+            //Возврат результата
+            return geographyObjectCoordinate.Id;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Метод восстановления координаты географического объекта
     /// </summary>
     /// <param cref="long?" name="id">Идентификатор координаты географического объекта</param>
@@ -249,54 +297,6 @@ public class GeographyObjectsCoordinatesDAO(ILogger<GeographyObjectsCoordinatesD
 
             //Возврат результата
             return true;
-        }
-        catch (Exception ex)
-        {
-            //Логгирование
-            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
-
-            //Проброс исключения
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Метод добавления координаты географического объекта
-    /// </summary>
-    /// <param cref="GeographyObject?" name="geographyObject">Географический объект</param>
-    /// <param cref="CoordinateGeography?" name="coordinate">Координаты</param>
-    /// <param cref="int?" name="zoom">Коэффициент масштаба отображения сущности</param>
-    /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
-    /// <returns cref="long?">Идентификатор координаты географического объекта</returns>
-    /// <exception cref="Exception">Исключение</exception>
-    public async Task<long?> Add(GeographyObject? geographyObject, CoordinateGeography? coordinate, int? zoom, string username)
-    {
-        try
-        {
-            //Логгирование
-            _logger.LogInformation(InformationMessages.EnteredAddGeographyObjectCoordinateMethod);
-
-            //Проверки
-            if (geographyObject == null) throw new Exception(ErrorMessagesGeography.NotFoundGeographyObject);
-            if (coordinate == null) throw new Exception(ErrorMessagesGeography.NotFoundCoordinate);
-            if (zoom == null) throw new Exception(ErrorMessagesGeography.EmptyZoom);
-            if (geographyObject.DateDeleted != null) throw new Exception(ErrorMessagesGeography.DeletedGeographyObject);
-            if (coordinate.DateDeleted != null) throw new Exception(ErrorMessagesGeography.DeletedCoordinate);
-            if (zoom < 3 || zoom > 24) throw new Exception(ErrorMessagesGeography.IncorrectZoom);
-
-            //Получение данных из бд
-            GeographyObjectCoordinate? data = await GetByGeographyObjectIdAndCoordinateId(geographyObject.Id, coordinate.Id);
-
-            //Проверки
-            if (data != null) throw new Exception(ErrorMessagesGeography.ExistsGeographyObjectCoordinate);
-
-            //Запись данных в бд
-            GeographyObjectCoordinate geographyObjectCoordinate = new(username, false, coordinate.PolygonEntity.InteriorPoint, coordinate.PolygonEntity.Area, zoom ?? 3, coordinate, geographyObject);
-            await _context.GeographyObjectsCoordinates.AddAsync(geographyObjectCoordinate);
-            await _context.SaveChangesAsync();
-
-            //Возврат результата
-            return geographyObjectCoordinate.Id;
         }
         catch (Exception ex)
         {

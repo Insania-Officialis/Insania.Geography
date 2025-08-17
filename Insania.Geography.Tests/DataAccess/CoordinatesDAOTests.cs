@@ -128,7 +128,7 @@ public class CoordinatesDAOTests : BaseTest
     }
 
     /// <summary>
-    /// Тест метода изменения координаты
+    /// Тест метода добавления координаты
     /// </summary>
     /// <param cref="string?" name="coordinates">Координаты</param>
     /// <param cref="long?" name="typeId">Идентификатор типа координаты</param>
