@@ -34,8 +34,8 @@ public abstract class BaseTest
         //Создание коллекции ключей конфигурации
         Dictionary<string, string> configurationKeys = new()
         {
-           {"LoggingOptions:FilePath", "E:\\Program\\Insania\\Logs\\Geography.Tests\\log.txt"},
-           {"InitializationDataSettings:ScriptsPath", "E:\\Program\\Insania\\Insania.Geography\\Insania.Geography.Database\\Scripts"},
+           {"LoggingOptions:FilePath", "G:\\Program\\Insania\\Logs\\Geography.Tests\\log.txt"},
+           {"InitializationDataSettings:ScriptsPath", "G:\\Program\\Insania\\Insania.Geography\\Insania.Geography.Database\\Scripts"},
            {"InitializationDataSettings:InitStructure", "false"},
            {"InitializationDataSettings:Tables:GeographyObjectsTypes", "true"},
            {"InitializationDataSettings:Tables:GeographyObjects", "true"},

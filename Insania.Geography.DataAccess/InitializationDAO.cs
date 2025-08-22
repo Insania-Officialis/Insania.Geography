@@ -149,6 +149,7 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, GeographyConte
                         new(_transliteration, 5, _username, "Архипелаг", null),
                         new(_transliteration, 6, _username, "Остров", null),
                         new(_transliteration, 7, _username, "Континент", null),
+                        new(_transliteration, 8, _username, "Река", null),
                     ];
 
                     //Проход по коллекции сущностей
@@ -237,6 +238,11 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, GeographyConte
                         ["42", "Стальной", "6", "", ""],
                         ["43", "Стального дракона", "6", "", ""],
                         ["44", "Асфалийский", "7", "", ""],
+                        ["45", "Миклаин", "8", "", ""],
+                        ["46", "Дъяраин", "8", "", ""],
+                        ["47", "Йокульсау (Ледниковая река)", "8", "", ""],
+                        ["48", "Фьятлюндау (Горная река)", "8", "", ""],
+                        ["49", "Хрьёнур (Водопадный)", "8", "", ""],
                         ["10000", "Удалённая", "1", "", DateTime.UtcNow.ToString()],
                         ["10001", "Тестовая", "4", "", ""],
                     ];
