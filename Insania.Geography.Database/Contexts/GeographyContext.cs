@@ -54,6 +54,11 @@ public class GeographyContext : DbContext
     /// Координаты географических объектов
     /// </summary>
     public virtual DbSet<GeographyObjectCoordinate> GeographyObjectsCoordinates { get; set; }
+
+    /// <summary>
+    /// Рельефы
+    /// </summary>
+    public virtual DbSet<Relief> Reliefs { get; set; }
     #endregion
 
     #region Методы
@@ -111,6 +116,9 @@ public class GeographyContext : DbContext
 
         //Создание ограничения уникальности на координату географического объекта
         modelBuilder.Entity<GeographyObjectCoordinate>().HasIndex(x => new { x.CoordinateId, x.GeographyObjectId, x.DateDeleted }).IsUnique();
+
+        //Создание ограничения уникальности на псевдоним наименования рельефа
+        modelBuilder.Entity<Relief>().HasAlternateKey(x => x.Alias);
 
         //Добавление вторичного ключа для координат
         modelBuilder.Entity<GeographyObjectCoordinate>()

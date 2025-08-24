@@ -58,6 +58,11 @@ public class InitializationDataSettingsIncludeTables
     /// Координаты географических объектов
     /// </summary>
     public bool? GeographyObjectsCoordinates { get; set; }
+
+    /// <summary>
+    /// Рельефы
+    /// </summary>
+    public bool? Reliefs { get; set; }
 }
 
 /// <summary>

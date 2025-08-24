@@ -21,6 +21,7 @@ public static class InformationMessages
     public const string EnteredGetListGeographyObjectsMethod = "Вошли в метод получения списка географических объектов";
     public const string EnteredGetListGeographyObjectsCoordinatesMethod = "Вошли в метод получения списка координат географических объектов";
     public const string EnteredGetListGeographyObjectsTypesMethod = "Вошли в метод получения списка типов географических объектов";
+    public const string EnteredGetListReliefsMethod = "Вошли в метод получения списка рельефов";
     public const string EnteredRestoreCoordinateMethod = "Вошли в метод восстановления координаты";
     public const string EnteredRestoreGeographyObjectMethod = "Вошли в метод восстановления географического объекта";
     public const string EnteredRestoreGeographyObjectCoordinateMethod = "Вошли в метод восстановления координаты географического объекта";

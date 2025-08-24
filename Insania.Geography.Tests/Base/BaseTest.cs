@@ -42,6 +42,7 @@ public abstract class BaseTest
            {"InitializationDataSettings:Tables:CoordinatesTypes", "true"},
            {"InitializationDataSettings:Tables:Coordinates", "true"},
            {"InitializationDataSettings:Tables:GeographyObjectsCoordinates", "true"},
+           {"InitializationDataSettings:Tables:Reliefs", "true"},
            {"TokenSettings:Issuer", "Geography.Test"},
            {"TokenSettings:Audience", "Geography.Test"},
            {"TokenSettings:Key", "This key is generated for tests in the user zone"},
