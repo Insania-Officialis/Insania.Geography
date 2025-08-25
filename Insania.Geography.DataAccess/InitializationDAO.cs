@@ -150,6 +150,11 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, GeographyConte
                         new(_transliteration, 6, _username, "Остров", null),
                         new(_transliteration, 7, _username, "Континент", null),
                         new(_transliteration, 8, _username, "Река", null),
+                        new(_transliteration, 9, _username, "Горная цепь", null),
+                        new(_transliteration, 10, _username, "Лес", null),
+                        new(_transliteration, 11, _username, "Равнина", null),
+                        new(_transliteration, 12, _username, "Болото", null),
+                        new(_transliteration, 13, _username, "Полуостров", null),
                     ];
 
                     //Проход по коллекции сущностей
@@ -243,6 +248,15 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, GeographyConte
                         ["47", "Йокульсау (Ледниковая река)", "8", "", ""],
                         ["48", "Фьятлюндау (Горная река)", "8", "", ""],
                         ["49", "Хрьёнур (Водопадный)", "8", "", ""],
+                        ["50", "Солёный крюк", "13", "", ""],
+                        ["51", "Моровые равнины", "11", "", ""],
+                        ["52", "Барьерный хребет", "9", "", ""],
+                        ["53", "Туманные болота", "12", "", ""],
+                        ["54", "Чернолесье", "10", "", ""],
+                        ["55", "Зачарованный лес", "10", "", ""],
+                        ["56", "Серые скалы", "9", "", ""],
+                        ["57", "Южная равнина", "11", "", ""],
+                        ["58", "Снежные пики", "9", "", ""],
                         ["10000", "Удалённая", "1", "", DateTime.UtcNow.ToString()],
                         ["10001", "Тестовая", "4", "", ""],
                     ];
