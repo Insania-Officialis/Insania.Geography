@@ -59,6 +59,11 @@ public class GeographyContext : DbContext
     /// Рельефы
     /// </summary>
     public virtual DbSet<Relief> Reliefs { get; set; }
+
+    /// <summary>
+    /// Координаты рельефов
+    /// </summary>
+    public virtual DbSet<ReliefCoordinate> ReliefsCoordinates { get; set; }
     #endregion
 
     #region Методы
@@ -88,6 +93,12 @@ public class GeographyContext : DbContext
             entity.HasAlternateKey(x => x.Alias);
         });
 
+        //Добавление вторичного ключа для типа координат
+        modelBuilder.Entity<CoordinateGeography>()
+            .HasOne(x => x.TypeEntity)
+            .WithMany()
+            .HasForeignKey(x => x.TypeId);
+
         //Настройка сущности координаты
         modelBuilder.Entity<Coordinate>(entity =>
         {
@@ -102,26 +113,29 @@ public class GeographyContext : DbContext
             modelBuilder.Entity<CoordinateGeography>().HasIndex(x => x.PolygonEntity).HasMethod("gist");
         });
 
-        //Добавление вторичного ключа для типа координат
-        modelBuilder.Entity<CoordinateGeography>()
-            .HasOne(x => x.TypeEntity)
-            .WithMany()
-            .HasForeignKey(x => x.TypeId);
-
         //Создание ограничения уникальности на псевдоним типа географического объекта
         modelBuilder.Entity<GeographyObjectType>().HasAlternateKey(x => x.Alias);
 
         //Создание ограничения уникальности на псевдоним наименования географического объекта
         modelBuilder.Entity<GeographyObject>().HasAlternateKey(x => x.Alias);
 
-        //Создание ограничения уникальности на координату географического объекта
-        modelBuilder.Entity<GeographyObjectCoordinate>().HasIndex(x => new { x.CoordinateId, x.GeographyObjectId, x.DateDeleted }).IsUnique();
-
         //Создание ограничения уникальности на псевдоним наименования рельефа
         modelBuilder.Entity<Relief>().HasAlternateKey(x => x.Alias);
 
+        //Создание ограничения уникальности на координату географического объекта
+        modelBuilder.Entity<GeographyObjectCoordinate>().HasIndex(x => new { x.CoordinateId, x.GeographyObjectId, x.DateDeleted }).IsUnique();
+
         //Добавление вторичного ключа для координат
         modelBuilder.Entity<GeographyObjectCoordinate>()
+            .HasOne(x => x.CoordinateEntity)
+            .WithMany()
+            .HasForeignKey(x => x.CoordinateId);
+
+        //Создание ограничения уникальности на координату рельефа
+        modelBuilder.Entity<ReliefCoordinate>().HasIndex(x => new { x.CoordinateId, x.ReliefId, x.DateDeleted }).IsUnique();
+
+        //Добавление вторичного ключа для координат
+        modelBuilder.Entity<ReliefCoordinate>()
             .HasOne(x => x.CoordinateEntity)
             .WithMany()
             .HasForeignKey(x => x.CoordinateId);

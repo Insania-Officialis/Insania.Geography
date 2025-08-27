@@ -9,7 +9,7 @@ using Insania.Shared.Entities;
 namespace Insania.Geography.Entities;
 
 /// <summary>
-/// Модель географического объекта координаты географического объекта
+/// Модель координаты географического объекта
 /// </summary>
 [Table("u_geography_objects_coordinates")]
 [Comment("Координаты географических объектов")]
@@ -17,7 +17,7 @@ public class GeographyObjectCoordinate : EntityCoordinate
 {
     #region Конструкторы
     /// <summary>
-    /// Простой конструктор модели географического объекта координаты географического объекта
+    /// Простой конструктор модели координаты географического объекта
     /// </summary>
     public GeographyObjectCoordinate() : base()
     {
@@ -25,7 +25,7 @@ public class GeographyObjectCoordinate : EntityCoordinate
     }
 
     /// <summary>
-    /// Конструктор модели географического объекта координаты географического объекта без идентификатора
+    /// Конструктор модели координаты географического объекта без идентификатора
     /// </summary>
     /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
     /// <param cref="bool" name="isSystem">Признак системной записи</param>
@@ -42,7 +42,7 @@ public class GeographyObjectCoordinate : EntityCoordinate
     }
 
     /// <summary>
-    /// Конструктор модели географического объекта координаты географического объекта с идентификатором
+    /// Конструктор модели координаты географического объекта с идентификатором
     /// </summary>
     /// <param cref="long?" name="id">Идентификатор пользователя</param>
     /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
@@ -60,7 +60,7 @@ public class GeographyObjectCoordinate : EntityCoordinate
     }
 
     /// <summary>
-    /// Конструктор модели географического объекта координаты географического объекта с идентификатором
+    /// Конструктор модели координаты географического объекта с идентификатором
     /// </summary>
     /// <param cref="GeographyObjectCoordinate" name="entity">Базовая сущность</param>
     public GeographyObjectCoordinate(GeographyObjectCoordinate entity) : this(entity.Id, entity.UsernameCreate, entity.IsSystem, entity.Center, entity.Area, entity.Zoom, (entity.CoordinateEntity as CoordinateGeography)!, entity.GeographyObjectEntity!, entity.DateDeleted)
