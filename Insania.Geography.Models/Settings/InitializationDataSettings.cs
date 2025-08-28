@@ -63,6 +63,11 @@ public class InitializationDataSettingsIncludeTables
     /// Рельефы
     /// </summary>
     public bool? Reliefs { get; set; }
+
+    /// <summary>
+    /// Координаты рельефов
+    /// </summary>
+    public bool? ReliefsCoordinates { get; set; }
 }
 
 /// <summary>

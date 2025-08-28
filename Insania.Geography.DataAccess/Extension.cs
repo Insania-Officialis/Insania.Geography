@@ -22,5 +22,6 @@ public static class Extension
             .AddScoped<ICoordinatesDAO, CoordinatesDAO>() //сервис работы с данными координат
             .AddScoped<IGeographyObjectsCoordinatesDAO, GeographyObjectsCoordinatesDAO>() //сервис работы с данными координат географических объектов
             .AddScoped<IReliefsDAO, ReliefsDAO>() //сервис работы с данными рельефов
+            .AddScoped<IReliefsCoordinatesDAO, ReliefsCoordinatesDAO>() //сервис работы с данными координат рельефов
         ;
 }
