@@ -32,7 +32,7 @@ public class GeographyObjectsCoordinatesController(ILogger<GeographyObjectsCoord
 
     #region Методы
     /// <summary>
-    /// Метод получения списка координат географических объектов
+    /// Метод актуализации координаты географического объекта
     /// </summary>
     /// <param cref="GeographyObjectsCoordinatesUpgradeRequest" name="request">Модель запроса актуализации координаты географического объекта</param>
     /// <returns cref="OkResult">Список координат географических объектов</returns>
