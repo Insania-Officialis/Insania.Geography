@@ -9,17 +9,19 @@ using Insania.Geography.Entities;
 namespace Insania.Geography.Middleware;
 
 /// <summary>
-/// Сервис логгирования конвейера запросов
+/// Конвейер запросов логгирования
 /// </summary>
 /// <param name="next">Делегат следующего метода</param>
 public class LoggingMiddleware(RequestDelegate next)
 {
-    #region Поля
+    #region Зависимости
     /// <summary>
     /// Делегат следующего метода
     /// </summary>
     private readonly RequestDelegate _next = next;
+    #endregion
 
+    #region Поля
     /// <summary>
     /// Успешные статусы
     /// </summary>
