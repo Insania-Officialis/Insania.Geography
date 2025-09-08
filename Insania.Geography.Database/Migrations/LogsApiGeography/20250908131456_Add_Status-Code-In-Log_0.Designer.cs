@@ -3,6 +3,7 @@ using System;
 using Insania.Geography.Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Insania.Geography.Database.Migrations.LogsApiGeography
 {
     [DbContext(typeof(LogsApiGeographyContext))]
-    partial class LogsApiGeographyContextModelSnapshot : ModelSnapshot
+    [Migration("20250908131456_Add_Status-Code-In-Log_0")]
+    partial class Add_StatusCodeInLog_0
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

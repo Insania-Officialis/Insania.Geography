@@ -25,7 +25,7 @@ public class LoggingMiddleware(RequestDelegate next)
     /// <summary>
     /// Успешные статусы
     /// </summary>
-    private readonly static List<string> _successCodes = ["200", "204"];
+    private readonly static List<int> _successCodes = [200, 204];
 
     /// <summary>
     /// Исключения, которым не нужно фиксировать тело запроса и ответа
@@ -51,9 +51,6 @@ public class LoggingMiddleware(RequestDelegate next)
         contextDB.Logs.Add(log);
         await contextDB.SaveChangesAsync();
 
-        //Определение успешности ответа
-        var success = _successCodes.Any(x => x == context.Response.StatusCode.ToString());
-
         //Объявление переменной ответа
         string? response = null;
 
@@ -69,8 +66,14 @@ public class LoggingMiddleware(RequestDelegate next)
             await _next(context);
             response = await GetResponse(context.Response);
 
+            //Получение кода статуса
+            var statusCode = context.Response.StatusCode; //код статуса
+
+            //Определение успешности ответа
+            var success = _successCodes.Any(x => x == statusCode);
+
             //Запись результата выполнения в лог
-            log.SetEnd(success, response);
+            log.SetEnd(success, response, statusCode);
             contextDB.Logs.Update(log);
             await contextDB.SaveChangesAsync();
 
@@ -82,8 +85,14 @@ public class LoggingMiddleware(RequestDelegate next)
             //Переход к следующему элементу
             await _next(context);
 
+            //Получение кода статуса
+            var statusCode = context.Response.StatusCode; //код статуса
+
+            //Определение успешности ответа
+            var success = _successCodes.Any(x => x == statusCode);
+
             //Запись результата выполнения в лог
-            log.SetEnd(success, response);
+            log.SetEnd(success, response, statusCode);
             contextDB.Logs.Update(log);
             await contextDB.SaveChangesAsync();
         }

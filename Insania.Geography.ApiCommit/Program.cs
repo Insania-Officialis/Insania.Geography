@@ -175,6 +175,8 @@ builder.Services.AddSingleton<List<string>>(
 [
     "/swagger/v1/swagger.json",
     "/swagger",
+    "/swagger/index.html",
+    "/swagger/favicon-16x16.png",
 ]);
 
 //Построение веб-приложения
@@ -190,8 +192,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 //Добавление конвееров запросов
-app.UseMiddleware<Insania.Shared.Middleware.AuthorizationMiddleware>(); //авторизация
 app.UseMiddleware<LoggingMiddleware>(); //логгирование
+app.UseMiddleware<Insania.Shared.Middleware.AuthorizationMiddleware>(); //авторизация
 
 //Подключение сваггера
 app.UseSwagger();

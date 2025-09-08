@@ -14,7 +14,6 @@ namespace Insania.Geography.ApiCommit.Controllers;
 /// </summary>
 /// <param cref="ILogger" name="logger">Сервис логгирования</param>
 /// <param cref="IGeographyObjectsCoordinatesBL" name="geographyObjectsCoordinatesBL">Сервис работы с бизнес-логикой координат географических объектов</param>
-[Authorize]
 [Route("geography_objects_coordinates")]
 public class GeographyObjectsCoordinatesController(ILogger<GeographyObjectsCoordinatesController> logger, IGeographyObjectsCoordinatesBL geographyObjectsCoordinatesBL) : Controller
 {
