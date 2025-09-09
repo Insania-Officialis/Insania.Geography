@@ -173,10 +173,7 @@ services.AddAutoMapper(cfg => cfg.AddProfile<GeographyMappingProfile>());
 //Регистрация списка исключений авторизации
 builder.Services.AddSingleton<List<string>>(
 [
-    "/swagger/v1/swagger.json",
-    "/swagger",
-    "/swagger/index.html",
-    "/swagger/favicon-16x16.png",
+
 ]);
 
 //Построение веб-приложения
