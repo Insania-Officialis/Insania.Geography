@@ -124,7 +124,7 @@ public class LoggingMiddleware(RequestDelegate next)
             request.Body.Position = 0;
 
             //Создание модели запроса
-            LogRequest logRequest = new(request.Headers.FirstOrDefault(x => x.Key == "authentication").Value, request.QueryString.ToString(), bodyString);
+            LogRequest logRequest = new(request.Headers.FirstOrDefault(x => x.Key == "Authorization").Value, request.QueryString.ToString(), bodyString);
 
             //Возврат результата
             return JsonConvert.SerializeObject(logRequest);
@@ -132,7 +132,7 @@ public class LoggingMiddleware(RequestDelegate next)
         else
         {
             //Создание модели запроса
-            LogRequest logRequest = new(request.Headers.FirstOrDefault(x => x.Key == "authentication").Value, request.QueryString.ToString(), null);
+            LogRequest logRequest = new(request.Headers.FirstOrDefault(x => x.Key == "Authorization").Value, request.QueryString.ToString(), null);
 
             //Возврат результата
             return JsonConvert.SerializeObject(logRequest);
