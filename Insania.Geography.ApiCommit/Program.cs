@@ -142,14 +142,12 @@ services.AddSwaggerGen(options =>
 //Добавление корсов
 services.AddCors(options =>
 {
-    options.AddPolicy("BadPolicy", policyBuilder => policyBuilder
+    options.AddPolicy("CorsPolicy", policyBuilder => policyBuilder
         .SetIsOriginAllowed(origin => true)
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials()
     );
-
-    options.DefaultPolicyName = "BadPolicy";
 });
 
 //Добавление возможности работы с координатами
@@ -182,6 +180,9 @@ WebApplication app = builder.Build();
 //Подключение маршрутизации
 app.UseRouting();
 
+//Подключение корсов
+app.UseCors("CorsPolicy");
+
 //Подключение аутентификации
 app.UseAuthentication();
 
@@ -198,9 +199,6 @@ app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Insania API V1");
 });
-
-//Подключение корсов
-app.UseCors();
 
 //Подключение маршрутизации контроллеров
 app.MapControllers();
