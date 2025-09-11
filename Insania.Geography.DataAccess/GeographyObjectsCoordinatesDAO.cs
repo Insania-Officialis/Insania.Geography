@@ -113,27 +113,25 @@ public class GeographyObjectsCoordinatesDAO(ILogger<GeographyObjectsCoordinatesD
     /// Метод получения списка координат географических объектов
     /// </summary>
     /// <param cref="long?" name="geographyObjectId">Идентификатор географического объекта</param>
-    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
-    /// <param cref="long[]?" name="typeIds">Идентификаторы типов</param>
     /// <returns cref="List{GeographyObjectCoordinate}">Список координат географических объектов</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<List<GeographyObjectCoordinate>> GetList(long? geographyObjectId = null, bool? hasCoordinates = null, long[]? typeIds = null)
+    public async Task<List<GeographyObjectCoordinate>> GetList(long? geographyObjectId = null)
     {
         try
         {
             //Логгирование
             _logger.LogInformation(InformationMessages.EnteredGetListGeographyObjectCoordinatesMethod);
 
-            //Проверки
-            if (geographyObjectId == null) throw new Exception(ErrorMessagesGeography.NotFoundGeographyObject);
-
-            //Получение данных из бд
-            List<GeographyObjectCoordinate> data = await _context.GeographyObjectsCoordinates
+            //Формирование запроса
+            IQueryable<GeographyObjectCoordinate> query = _context.GeographyObjectsCoordinates
                 .Include(x => x.GeographyObjectEntity)
                 .Include(x => x.CoordinateEntity)
                 .ThenInclude(y => y != null ? y.TypeEntity : null)
-                .Where(x => x.DateDeleted == null && x.GeographyObjectId == geographyObjectId)
-                .ToListAsync();
+                .Where(x => x.DateDeleted == null);
+            if (geographyObjectId != null) query = query.Where(x => x.GeographyObjectId == geographyObjectId);
+
+            //Получение данных из бд
+            List<GeographyObjectCoordinate> data = await query.ToListAsync();
 
             //Возврат результата
             return data;

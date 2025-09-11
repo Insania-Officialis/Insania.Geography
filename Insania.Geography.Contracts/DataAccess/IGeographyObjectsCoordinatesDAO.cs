@@ -28,11 +28,9 @@ public interface IGeographyObjectsCoordinatesDAO
     /// Метод получения списка координат географических объектов
     /// </summary>
     /// <param cref="long?" name="geographyObjectId">Идентификатор географического объекта</param>
-    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
-    /// <param cref="long[]?" name="typeIds">Идентификаторы типов</param>
     /// <returns cref="List{GeographyObjectCoordinate}">Список координат географических объектов</returns>
     /// <exception cref="Exception">Исключение</exception>
-    Task<List<GeographyObjectCoordinate>> GetList(long? geographyObjectId = null, bool? hasCoordinates = null, long[]? typeIds = null);
+    Task<List<GeographyObjectCoordinate>> GetList(long? geographyObjectId = null);
 
     /// <summary>
     /// Метод добавления координаты географического объекта

@@ -1,18 +1,23 @@
-﻿using AutoMapper;
+﻿using System.Transactions;
+
+using Microsoft.Extensions.Logging;
+
+using AutoMapper;
+using NetTopologySuite.Geometries;
+
+using Insania.Shared.Contracts.Services;
+using Insania.Shared.Models.Responses.Base;
+
 using Insania.Geography.Contracts.BusinessLogic;
 using Insania.Geography.Contracts.DataAccess;
 using Insania.Geography.Database.Contexts;
 using Insania.Geography.Entities;
 using Insania.Geography.Models.Requests.GeographyObjectsCoordinates;
 using Insania.Geography.Models.Responses.GeographyObjectsCoordinates;
-using Insania.Shared.Contracts.Services;
-using Insania.Shared.Models.Responses.Base;
-using Microsoft.Extensions.Logging;
-using NetTopologySuite.Geometries;
-using System.Linq;
-using System.Transactions;
-using ErrorMessagesGeography = Insania.Geography.Messages.ErrorMessages;
+
 using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
+using ErrorMessagesGeography = Insania.Geography.Messages.ErrorMessages;
 using InformationMessages = Insania.Geography.Messages.InformationMessages;
 
 namespace Insania.Geography.BusinessLogic;
@@ -111,11 +116,10 @@ public class GeographyObjectsCoordinatesBL(ILogger<GeographyObjectsCoordinatesBL
     /// <summary>
     /// Метод получения списка координат географических объектов
     /// </summary>
-    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
     /// <param cref="long[]?" name="typeIds">Идентификаторы типов</param>
     /// <returns cref="GeographyObjectsCoordinatesResponseList">Список координат географических объектов</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<GeographyObjectsCoordinatesResponseList> GetList(bool? hasCoordinates = null, long[]? typeIds = null)
+    public async Task<GeographyObjectsCoordinatesResponseList> GetList(long[]? typeIds = null)
     {
         try
         {
@@ -123,7 +127,7 @@ public class GeographyObjectsCoordinatesBL(ILogger<GeographyObjectsCoordinatesBL
             _logger.LogInformation(InformationMessages.EnteredGetListGeographyObjectsCoordinatesMethod);
 
             //Получение данных
-            List<GeographyObject>? data = await _geographyObjectsDAO.GetList(hasCoordinates: hasCoordinates, typeIds: typeIds);
+            List<GeographyObject>? data = await _geographyObjectsDAO.GetList(hasCoordinates: true, typeIds: typeIds);
 
             //Формирование ответа
             GeographyObjectsCoordinatesResponseList? response = null;

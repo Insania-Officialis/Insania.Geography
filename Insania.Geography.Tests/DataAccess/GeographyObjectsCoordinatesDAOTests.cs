@@ -161,7 +161,6 @@ public class GeographyObjectsCoordinatesDAOTests : BaseTest
     /// Тест метода получения списка координат географических объектов по идентификатору географического объекта
     /// </summary>
     /// <param cref="long?" name="geographyObjectId">Идентификатор географического объекта</param>
-    [TestCase(null)]
     [TestCase(-1)]
     [TestCase(10000)]
     [TestCase(1)]
@@ -181,14 +180,10 @@ public class GeographyObjectsCoordinatesDAOTests : BaseTest
                 default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            //Проверка исключения
-            switch (geographyObjectId)
-            {
-                case null: Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotFoundGeographyObject)); break;
-                default: throw;
-            }
+            //Проброс исключения
+            throw;
         }
     }
 

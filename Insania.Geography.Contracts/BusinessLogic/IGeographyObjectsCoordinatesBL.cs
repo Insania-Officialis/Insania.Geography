@@ -21,11 +21,10 @@ public interface IGeographyObjectsCoordinatesBL
     /// <summary>
     /// Метод получения списка координат географических объектов
     /// </summary>
-    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
     /// <param cref="long[]?" name="typeIds">Идентификаторы типов</param>
     /// <returns cref="GeographyObjectsCoordinatesResponseList">Список координат географических объектов</returns>
     /// <exception cref="Exception">Исключение</exception>
-    Task<GeographyObjectsCoordinatesResponseList> GetList(bool? hasCoordinates = null, long[]? typeIds = null);
+    Task<GeographyObjectsCoordinatesResponseList> GetList(long[]? typeIds = null);
 
     /// <summary>
     /// Метод актуализации координаты географического объекта

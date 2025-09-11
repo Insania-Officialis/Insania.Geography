@@ -73,7 +73,7 @@ public class GeographyObjectsCoordinatesBLTests : BaseTest
 
     #region Методы тестирования
     /// <summary>
-    /// Тест метода получения списка координат географических объектов по идентификатору географического объекта
+    /// Тест метода получения списка координат географического объекта по идентификатору географического объекта
     /// </summary>
     /// <param cref="long?" name="geographyObjectId">Идентификатор географического объекта</param>
     [TestCase(null)]
@@ -109,6 +109,56 @@ public class GeographyObjectsCoordinatesBLTests : BaseTest
                 case -1: case 10000: Assert.That(ex.Message, Is.EqualTo(ErrorMessagesGeography.NotFoundGeographyObjectCoordinate)); break;
                 default: throw;
             }
+        }
+    }
+
+    /// <summary>
+    /// Тест метода получения списка координат географических объектов
+    /// </summary>
+    /// <param cref="long[]?" name="typeIds">Идентификаторы типов</param>
+    [TestCase(new long[] {-1})]
+    [TestCase(null)]
+    [TestCase(new long[0])]
+    [TestCase(new long[] {4})]
+    [TestCase(new long[] {4,6})]
+    [TestCase(new long[] {-1,4,6})]
+    public async Task GetListTest(long[]? typeIds)
+    {
+        try
+        {
+            //Получение результата
+            GeographyObjectsCoordinatesResponseList? result = await GeographyObjectsCoordinatesBL.GetList(typeIds);
+
+            //Проверка результата
+            Assert.That(result, Is.Not.Null);
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(result.Success, Is.True);
+                Assert.That(result.Items, Is.Not.Null);
+            }
+            if (typeIds?.Length == 1 && typeIds[0] == -1) Assert.That(result.Items, Is.Empty);
+            else
+            {
+                Assert.That(result.Items, Is.Not.Empty);
+                foreach (var item in result.Items)
+                {
+                    Assert.That(item, Is.Not.Null);
+                    using (Assert.EnterMultipleScope())
+                    {
+                        Assert.That(item.Id, Is.Not.Null);
+                        Assert.That(item.Name, Is.Not.Null);
+                        Assert.That(item.Center, Is.Not.Null);
+                        Assert.That(item.Zoom, Is.Not.Null);
+                        Assert.That(item.Items, Is.Not.Null);
+                        Assert.That(item.Items, Is.Not.Empty);
+                    }
+                }
+            }
+        }
+        catch (Exception)
+        {
+            //Проброс исключения
+            throw;
         }
     }
 
