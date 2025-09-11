@@ -112,45 +112,17 @@ public class GeographyObjectsCoordinatesDAO(ILogger<GeographyObjectsCoordinatesD
     /// <summary>
     /// Метод получения списка координат географических объектов
     /// </summary>
-    /// <returns cref="List{GeographyObjectCoordinate}">Список координат географических объектов</returns>
-    /// <exception cref="Exception">Исключение</exception>
-    public async Task<List<GeographyObjectCoordinate>> GetList()
-    {
-        try
-        {
-            //Логгирование
-            _logger.LogInformation(InformationMessages.EnteredGetListGeographyObjectsCoordinatesMethod);
-
-            //Получение данных из бд
-            List<GeographyObjectCoordinate> data = await _context.GeographyObjectsCoordinates
-                .Where(x => x.DateDeleted == null)
-                .ToListAsync();
-
-            //Возврат результата
-            return data;
-        }
-        catch (Exception ex)
-        {
-            //Логгирование
-            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
-
-            //Проброс исключения
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Метод получения списка координат географических объектов по идентификатору географического объекта
-    /// </summary>
     /// <param cref="long?" name="geographyObjectId">Идентификатор географического объекта</param>
+    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
+    /// <param cref="long[]?" name="typeIds">Идентификаторы типов</param>
     /// <returns cref="List{GeographyObjectCoordinate}">Список координат географических объектов</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<List<GeographyObjectCoordinate>> GetList(long? geographyObjectId)
+    public async Task<List<GeographyObjectCoordinate>> GetList(long? geographyObjectId = null, bool? hasCoordinates = null, long[]? typeIds = null)
     {
         try
         {
             //Логгирование
-            _logger.LogInformation(InformationMessages.EnteredGetListGeographyObjectsCoordinatesMethod);
+            _logger.LogInformation(InformationMessages.EnteredGetListGeographyObjectCoordinatesMethod);
 
             //Проверки
             if (geographyObjectId == null) throw new Exception(ErrorMessagesGeography.NotFoundGeographyObject);

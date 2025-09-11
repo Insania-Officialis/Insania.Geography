@@ -36,13 +36,13 @@ public class GeographyObjectsCoordinatesController(ILogger<GeographyObjectsCoord
     /// <returns cref="OkResult">Список координат географических объектов</returns>
     /// <returns cref="BadRequestResult">Ошибка</returns>
     [HttpGet]
-    [Route("list")]
-    public async Task<IActionResult> GetList([FromQuery] long? geography_object_id)
+    [Route("by_geography_object_id")]
+    public async Task<IActionResult> GetByGeographyObjectId([FromQuery] long? geography_object_id)
     {
         try
         {
             //Получение результата
-            GeographyObjectsCoordinatesResponseList? result = await _geographyObjectsCoordinatesBL.GetList(geography_object_id);
+            GeographyObjectCoordinatesResponseList? result = await _geographyObjectsCoordinatesBL.GetByGeographyObjectId(geography_object_id);
 
             //Возврат ответа
             return Ok(result);

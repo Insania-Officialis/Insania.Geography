@@ -80,12 +80,12 @@ public class GeographyObjectsCoordinatesBLTests : BaseTest
     [TestCase(-1)]
     [TestCase(10000)]
     [TestCase(1)]
-    public async Task GetListTest(long? geographyObjectId)
+    public async Task GetByGeographyObjectIdTest(long? geographyObjectId)
     {
         try
         {
             //Получение результата
-            GeographyObjectsCoordinatesResponseList? result = await GeographyObjectsCoordinatesBL.GetList(geographyObjectId);
+            GeographyObjectCoordinatesResponseList? result = await GeographyObjectsCoordinatesBL.GetByGeographyObjectId(geographyObjectId);
 
             //Проверка результата
             Assert.That(result, Is.Not.Null);

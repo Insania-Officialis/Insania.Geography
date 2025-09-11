@@ -27,17 +27,12 @@ public interface IGeographyObjectsCoordinatesDAO
     /// <summary>
     /// Метод получения списка координат географических объектов
     /// </summary>
-    /// <returns cref="List{GeographyObjectCoordinate}">Список координат географических объектов</returns>
-    /// <exception cref="Exception">Исключение</exception>
-    Task<List<GeographyObjectCoordinate>> GetList();
-
-    /// <summary>
-    /// Метод получения списка координат географических объектов по идентификатору географического объекта
-    /// </summary>
     /// <param cref="long?" name="geographyObjectId">Идентификатор географического объекта</param>
+    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
+    /// <param cref="long[]?" name="typeIds">Идентификаторы типов</param>
     /// <returns cref="List{GeographyObjectCoordinate}">Список координат географических объектов</returns>
     /// <exception cref="Exception">Исключение</exception>
-    Task<List<GeographyObjectCoordinate>> GetList(long? geographyObjectId);
+    Task<List<GeographyObjectCoordinate>> GetList(long? geographyObjectId = null, bool? hasCoordinates = null, long[]? typeIds = null);
 
     /// <summary>
     /// Метод добавления координаты географического объекта

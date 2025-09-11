@@ -1,23 +1,18 @@
-﻿using System.Transactions;
-
-using Microsoft.Extensions.Logging;
-
-using AutoMapper;
-using NetTopologySuite.Geometries;
-
-using Insania.Shared.Contracts.Services;
-using Insania.Shared.Models.Responses.Base;
-
+﻿using AutoMapper;
 using Insania.Geography.Contracts.BusinessLogic;
 using Insania.Geography.Contracts.DataAccess;
 using Insania.Geography.Database.Contexts;
 using Insania.Geography.Entities;
 using Insania.Geography.Models.Requests.GeographyObjectsCoordinates;
 using Insania.Geography.Models.Responses.GeographyObjectsCoordinates;
-
-using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
-
+using Insania.Shared.Contracts.Services;
+using Insania.Shared.Models.Responses.Base;
+using Microsoft.Extensions.Logging;
+using NetTopologySuite.Geometries;
+using System.Linq;
+using System.Transactions;
 using ErrorMessagesGeography = Insania.Geography.Messages.ErrorMessages;
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
 using InformationMessages = Insania.Geography.Messages.InformationMessages;
 
 namespace Insania.Geography.BusinessLogic;
@@ -73,17 +68,17 @@ public class GeographyObjectsCoordinatesBL(ILogger<GeographyObjectsCoordinatesBL
 
     #region Методы
     /// <summary>
-    /// Метод получения списка координат географических объектов по идентификатору географического объекта
+    /// Метод получения списка координат географического объекта по идентификатору географического объекта
     /// </summary>
     /// <param cref="long?" name="geographyObjectId">Идентификатор географического объекта</param>
-    /// <returns cref="GeographyObjectsCoordinatesResponseList">Список координат географических объектов</returns>
+    /// <returns cref="GeographyObjectCoordinatesResponseList">Список координат географического объекта</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<GeographyObjectsCoordinatesResponseList> GetList(long? geographyObjectId)
+    public async Task<GeographyObjectCoordinatesResponseList> GetByGeographyObjectId(long? geographyObjectId)
     {
         try
         {
             //Логгирование
-            _logger.LogInformation(InformationMessages.EnteredGetListGeographyObjectsCoordinatesMethod);
+            _logger.LogInformation(InformationMessages.EnteredGetListGeographyObjectCoordinatesMethod);
 
             //Проверки
             if (geographyObjectId == null) throw new Exception(ErrorMessagesGeography.NotFoundGeographyObject);
@@ -96,9 +91,68 @@ public class GeographyObjectsCoordinatesBL(ILogger<GeographyObjectsCoordinatesBL
             GeographyObject geographyObject = geographyObjectCoordinate.GeographyObjectEntity ?? throw new Exception(ErrorMessagesGeography.NotFoundGeographyObject);
 
             //Формирование ответа
+            GeographyObjectCoordinatesResponseList? response = null;
+            if (data == null) response = new(false);
+            else response = new(true, geographyObject.Id, geographyObject.Name, geographyObjectCoordinate.Center, geographyObjectCoordinate.Zoom, data?.Select(x => new GeographyObjectCoordinatesResponseListItem(x.Id, x.CoordinateId, _polygonParserSL.FromPolygonToDoubleArray(x?.CoordinateEntity?.PolygonEntity), x?.CoordinateEntity?.TypeEntity?.BackgroundColor, x?.CoordinateEntity?.TypeEntity?.BorderColor)).ToList());
+
+            //Возврат ответа
+            return response;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Метод получения списка координат географических объектов
+    /// </summary>
+    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
+    /// <param cref="long[]?" name="typeIds">Идентификаторы типов</param>
+    /// <returns cref="GeographyObjectsCoordinatesResponseList">Список координат географических объектов</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<GeographyObjectsCoordinatesResponseList> GetList(bool? hasCoordinates = null, long[]? typeIds = null)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredGetListGeographyObjectsCoordinatesMethod);
+
+            //Получение данных
+            List<GeographyObject>? data = await _geographyObjectsDAO.GetList(hasCoordinates: hasCoordinates, typeIds: typeIds);
+
+            //Формирование ответа
             GeographyObjectsCoordinatesResponseList? response = null;
             if (data == null) response = new(false);
-            else response = new(true, geographyObject.Id, geographyObject.Name, geographyObjectCoordinate.Center, geographyObjectCoordinate.Zoom, data?.Select(x => new GeographyObjectsCoordinatesResponseListItem(x.Id, x.CoordinateId, _polygonParserSL.FromPolygonToDoubleArray(x?.CoordinateEntity?.PolygonEntity), x?.CoordinateEntity?.TypeEntity?.BackgroundColor, x?.CoordinateEntity?.TypeEntity?.BorderColor)).ToList());
+            else response = new(
+                true,
+                [
+                    .. data.Select(
+                        x => new GeographyObjectCoordinatesResponseList(
+                            true,
+                            x.Id,
+                            x.Name,
+                            x.GeographyObjectCoordinates?.OrderByDescending(y => y.Area)?.FirstOrDefault()?.Center,
+                            x.GeographyObjectCoordinates?.OrderByDescending(y => y.Area)?.FirstOrDefault()?.Zoom,
+                            [
+                                ..x.GeographyObjectCoordinates?.Select(
+                                    y => new GeographyObjectCoordinatesResponseListItem(
+                                        y.Id,
+                                        y.CoordinateId,
+                                        _polygonParserSL.FromPolygonToDoubleArray(y.CoordinateEntity?.PolygonEntity),
+                                        y.CoordinateEntity?.TypeEntity?.BackgroundColor,
+                                        y.CoordinateEntity?.TypeEntity?.BorderColor
+                                    )
+                                ) ?? []
+                            ]
+                        )
+                    )
+                ]
+            );
 
             //Возврат ответа
             return response;

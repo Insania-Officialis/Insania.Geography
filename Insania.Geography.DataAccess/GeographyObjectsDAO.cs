@@ -68,7 +68,7 @@ public class GeographyObjectsDAO(ILogger<GeographyObjectsDAO> logger, GeographyC
     }
 
     /// <summary>
-    /// Метод получения списка географических объектов с проверкой наличия координат
+    /// Метод получения списка географических объектов
     /// </summary>
     /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
     /// <param cref="long?" name="typeId">Идентификатор типа</param>
