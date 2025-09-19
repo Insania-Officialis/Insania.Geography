@@ -37,6 +37,9 @@ namespace Insania.Geography.DataAccess;
 public class InitializationDAO(ILogger<InitializationDAO> logger, GeographyContext geographyContext, LogsApiGeographyContext logsApiGeographyContext, IOptions<InitializationDataSettings> settings, ITransliterationSL transliteration, IPolygonParserSL polygonParser, IConfiguration configuration) : IInitializationDAO
 {
     #region Поля
+    /// <summary>
+    /// Пользователь, выполняющий изменения
+    /// </summary>
     private readonly string _username = "initializer";
     #endregion
 
