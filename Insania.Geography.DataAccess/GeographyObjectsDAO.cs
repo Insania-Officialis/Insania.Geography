@@ -88,7 +88,11 @@ public class GeographyObjectsDAO(ILogger<GeographyObjectsDAO> logger, GeographyC
                     .Include(x => x.GeographyObjectCoordinates!.Where(y => y.DateDeleted == null))
                     .ThenInclude(y => y.CoordinateEntity)
                     .ThenInclude(z => z!.TypeEntity)
-                    .Where(x => (hasCoordinates ?? false) ? x.GeographyObjectCoordinates != null : x.GeographyObjectCoordinates == null);
+                    .Where(
+                        x => (hasCoordinates ?? false) ?
+                        x.GeographyObjectCoordinates != null && x.GeographyObjectCoordinates.Any(y => y.DateDeleted == null) :
+                        x.GeographyObjectCoordinates == null || !x.GeographyObjectCoordinates.Any(y => y.DateDeleted == null)
+                    );
             if (typeId.HasValue) query = query.Where(x => x.TypeId == typeId);
             if (typeIds?.Length > 0) query = query.Where(x => typeIds.Contains(x.TypeId));
 
