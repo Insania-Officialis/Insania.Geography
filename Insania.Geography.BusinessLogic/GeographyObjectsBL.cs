@@ -1,16 +1,19 @@
-﻿using AutoMapper;
+﻿using Microsoft.Extensions.Logging;
+
+using AutoMapper;
+
+using Insania.Shared.Contracts.Services;
+using Insania.Shared.Models.Responses.Base;
+
 using Insania.Geography.Contracts.BusinessLogic;
 using Insania.Geography.Contracts.DataAccess;
 using Insania.Geography.Entities;
 using Insania.Geography.Models.Responses.GeographyObjects;
 using Insania.Geography.Models.Responses.GeographyObjectsCoordinates;
-using Insania.Shared.Contracts.Services;
-using Insania.Shared.Models.Responses.Base;
-using Microsoft.Extensions.Logging;
-using NetTopologySuite.Geometries;
-using System.Transactions;
-using ErrorMessagesGeography = Insania.Geography.Messages.ErrorMessages;
+
 using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
+using ErrorMessagesGeography = Insania.Geography.Messages.ErrorMessages;
 using InformationMessages = Insania.Geography.Messages.InformationMessages;
 
 namespace Insania.Geography.BusinessLogic;
