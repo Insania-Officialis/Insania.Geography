@@ -57,5 +57,33 @@ public class GeographyObjectsController(ILogger<GeographyObjectsController> logg
             return BadRequest(new BaseResponseError(ex.Message));
         }
     }
+
+    /// <summary>
+    /// Метод получения списка географических объектов с координатами
+    /// </summary>
+    /// <param cref="IEnumerable{Int64}" name="type_ids">Идентификаторы типов</param>
+    /// <returns cref="OkResult">Список географических объектов с координатами</returns>
+    /// <returns cref="BadRequestResult">Ошибка</returns>
+    [HttpGet]
+    [Route("list_with_coordinates")]
+    public async Task<IActionResult> GetListWithCoordinates([FromQuery] long[]? type_ids = null)
+    {
+        try
+        {
+            //Получение результата
+            BaseResponse? result = await _geographyObjectsBL.GetListWithCoordinates(type_ids?.ToArray());
+
+            //Возврат ответа
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text} {ex}", ErrorMessages.Error, ex);
+
+            //Возврат ошибки
+            return BadRequest(new BaseResponseError(ex.Message));
+        }
+    }
     #endregion
 }

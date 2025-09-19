@@ -114,64 +114,6 @@ public class GeographyObjectsCoordinatesBL(ILogger<GeographyObjectsCoordinatesBL
     }
 
     /// <summary>
-    /// Метод получения списка координат географических объектов
-    /// </summary>
-    /// <param cref="long[]?" name="typeIds">Идентификаторы типов</param>
-    /// <returns cref="GeographyObjectsCoordinatesResponseList">Список координат географических объектов</returns>
-    /// <exception cref="Exception">Исключение</exception>
-    public async Task<GeographyObjectsCoordinatesResponseList> GetList(long[]? typeIds = null)
-    {
-        try
-        {
-            //Логгирование
-            _logger.LogInformation(InformationMessages.EnteredGetListGeographyObjectsCoordinatesMethod);
-
-            //Получение данных
-            List<GeographyObject>? data = await _geographyObjectsDAO.GetList(hasCoordinates: true, typeIds: typeIds);
-
-            //Формирование ответа
-            GeographyObjectsCoordinatesResponseList? response = null;
-            if (data == null) response = new(false);
-            else response = new(
-                true,
-                [
-                    .. data.Select(
-                        x => new GeographyObjectCoordinatesResponseList(
-                            true,
-                            x.Id,
-                            x.Name,
-                            x.GeographyObjectCoordinates?.OrderByDescending(y => y.Area)?.FirstOrDefault()?.Center,
-                            x.GeographyObjectCoordinates?.OrderByDescending(y => y.Area)?.FirstOrDefault()?.Zoom,
-                            [
-                                ..x.GeographyObjectCoordinates?.Select(
-                                    y => new GeographyObjectCoordinatesResponseListItem(
-                                        y.Id,
-                                        y.CoordinateId,
-                                        _polygonParserSL.FromPolygonToDoubleArray(y.CoordinateEntity?.PolygonEntity),
-                                        y.CoordinateEntity?.TypeEntity?.BackgroundColor,
-                                        y.CoordinateEntity?.TypeEntity?.BorderColor
-                                    )
-                                ) ?? []
-                            ]
-                        )
-                    )
-                ]
-            );
-
-            //Возврат ответа
-            return response;
-        }
-        catch (Exception ex)
-        {
-            //Логгирование
-            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
-
-            //Проброс исключения
-            throw;
-        }
-    }
-
-    /// <summary>
     /// Метод актуализации координаты географического объекта
     /// </summary>
     /// <param cref="GeographyObjectsCoordinatesUpgradeRequest?" name="request">Модель запроса актуализации координаты географического объекта</param>

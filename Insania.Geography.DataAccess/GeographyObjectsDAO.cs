@@ -85,7 +85,8 @@ public class GeographyObjectsDAO(ILogger<GeographyObjectsDAO> logger, GeographyC
             //Формирование запроса
             IQueryable<GeographyObject> query = _context.GeographyObjects.Where(x => x.DateDeleted == null);
             if (hasCoordinates.HasValue) query = query
-                    .Include(x => x.GeographyObjectCoordinates)
+                    .Include(x => x.GeographyObjectCoordinates!)
+                    .ThenInclude(y => y.CoordinateEntity)
                     .Where(x => (hasCoordinates ?? false)
                         ? x.GeographyObjectCoordinates != null &&
                           x.GeographyObjectCoordinates.Any(y => y.DateDeleted == null)

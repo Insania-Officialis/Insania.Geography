@@ -1,5 +1,7 @@
 ﻿using Insania.Shared.Models.Responses.Base;
 
+using Insania.Geography.Models.Responses.GeographyObjects;
+
 namespace Insania.Geography.Contracts.BusinessLogic;
 
 /// <summary>
@@ -17,4 +19,12 @@ public interface IGeographyObjectsBL
     /// <remarks>Список географических объектов</remarks>
     /// <exception cref="Exception">Исключение</exception>
     Task<BaseResponseList> GetList(bool? hasCoordinates = null, long? typeId = null, long[]? typeIds = null);
+
+    /// <summary>
+    /// Метод получения списка географических объектов с координатами
+    /// </summary>
+    /// <param cref="long[]?" name="typeIds">Идентификаторы типов</param>
+    /// <returns cref="GeographyObjectsWithCoordinatesResponseList">Список географических объектов с координатами</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    Task<GeographyObjectsWithCoordinatesResponseList> GetListWithCoordinates(long[]? typeIds = null);
 }

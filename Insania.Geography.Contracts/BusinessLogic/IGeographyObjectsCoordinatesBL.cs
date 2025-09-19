@@ -19,14 +19,6 @@ public interface IGeographyObjectsCoordinatesBL
     Task<GeographyObjectCoordinatesResponseList> GetByGeographyObjectId(long? geographyObjectId);
 
     /// <summary>
-    /// Метод получения списка координат географических объектов
-    /// </summary>
-    /// <param cref="long[]?" name="typeIds">Идентификаторы типов</param>
-    /// <returns cref="GeographyObjectsCoordinatesResponseList">Список координат географических объектов</returns>
-    /// <exception cref="Exception">Исключение</exception>
-    Task<GeographyObjectsCoordinatesResponseList> GetList(long[]? typeIds = null);
-
-    /// <summary>
     /// Метод актуализации координаты географического объекта
     /// </summary>
     /// <param cref="GeographyObjectsCoordinatesUpgradeRequest?" name="request">Модель запроса актуализации координаты географического объекта</param>

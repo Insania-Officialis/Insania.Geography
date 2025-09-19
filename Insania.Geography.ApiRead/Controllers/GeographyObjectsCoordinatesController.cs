@@ -30,7 +30,7 @@ public class GeographyObjectsCoordinatesController(ILogger<GeographyObjectsCoord
 
     #region Методы
     /// <summary>
-    /// Метод получения списка координат географических объектов
+    /// Метод получения списка координат географических объектов по идентификатору географического объекта
     /// </summary>
     /// <param cref="long" name="geography_object_id">Идентификатор географического объекта</param>
     /// <returns cref="OkResult">Список координат географических объектов</returns>

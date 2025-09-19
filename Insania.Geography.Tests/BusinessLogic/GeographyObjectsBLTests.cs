@@ -3,6 +3,7 @@
 using Insania.Shared.Models.Responses.Base;
 
 using Insania.Geography.Contracts.BusinessLogic;
+using Insania.Geography.Models.Responses.GeographyObjects;
 using Insania.Geography.Tests.Base;
 
 using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
@@ -171,6 +172,56 @@ public class GeographyObjectsBLTests : BaseTest
                     Assert.That(result.Items, Is.Not.Empty);
                     break;
                 default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
+            }
+        }
+        catch (Exception)
+        {
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Тест метода получения списка географических объектов с координатами
+    /// </summary>
+    /// <param cref="long[]?" name="typeIds">Идентификаторы типов</param>
+    [TestCase(new long[] { -1 })]
+    [TestCase(null)]
+    [TestCase(new long[0])]
+    [TestCase(new long[] { 4 })]
+    [TestCase(new long[] { 4, 6 })]
+    [TestCase(new long[] { -1, 4, 6 })]
+    public async Task GetListTest(long[]? typeIds)
+    {
+        try
+        {
+            //Получение результата
+            GeographyObjectsWithCoordinatesResponseList? result = await GeographyObjectsBL.GetListWithCoordinates(typeIds);
+
+            //Проверка результата
+            Assert.That(result, Is.Not.Null);
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(result.Success, Is.True);
+                Assert.That(result.Items, Is.Not.Null);
+            }
+            if (typeIds?.Length == 1 && typeIds[0] == -1) Assert.That(result.Items, Is.Empty);
+            else
+            {
+                Assert.That(result.Items, Is.Not.Empty);
+                foreach (var item in result.Items)
+                {
+                    Assert.That(item, Is.Not.Null);
+                    using (Assert.EnterMultipleScope())
+                    {
+                        Assert.That(item.Id, Is.Not.Null);
+                        Assert.That(item.Name, Is.Not.Null);
+                        Assert.That(item.Center, Is.Not.Null);
+                        Assert.That(item.Zoom, Is.Not.Null);
+                        Assert.That(item.Coordinates, Is.Not.Null);
+                        Assert.That(item.Coordinates, Is.Not.Empty);
+                    }
+                }
             }
         }
         catch (Exception)
