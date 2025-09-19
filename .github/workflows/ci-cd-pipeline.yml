@@ -228,7 +228,7 @@ jobs:
           docker-compose ps
         } else {
           Write-Host "❌ Container failed to start"
-          docker-compose logs insania_web --tail=20
+          docker-compose logs insania_geography_api_read_1 --tail=20
           exit 1
         }
       shell: powershell
@@ -267,7 +267,7 @@ jobs:
           docker-compose ps
         } else {
           Write-Host "❌ Container failed to start"
-          docker-compose logs insania_web --tail=20
+          docker-compose logs insania_geography_api_read_2 --tail=20
           exit 1
         }
       shell: powershell
@@ -306,7 +306,7 @@ jobs:
           docker-compose ps
         } else {
           Write-Host "❌ Container failed to start"
-          docker-compose logs insania_web --tail=20
+          docker-compose logs insania_geography_api_commit_1 --tail=20
           exit 1
         }
       shell: powershell
@@ -345,7 +345,7 @@ jobs:
           docker-compose ps
         } else {
           Write-Host "❌ Container failed to start"
-          docker-compose logs insania_web --tail=20
+          docker-compose logs insania_geography_api_commit_2 --tail=20
           exit 1
         }
       shell: powershell
