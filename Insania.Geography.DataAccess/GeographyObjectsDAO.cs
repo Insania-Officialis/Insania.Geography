@@ -84,17 +84,14 @@ public class GeographyObjectsDAO(ILogger<GeographyObjectsDAO> logger, GeographyC
 
             //Формирование запроса
             IQueryable<GeographyObject> query = _context.GeographyObjects.Where(x => x.DateDeleted == null);
-            if (hasCoordinates.HasValue) query = query
-                    .Include(x => x.GeographyObjectCoordinates!.Where(y => y.DateDeleted == null))
-                    .ThenInclude(y => y.CoordinateEntity)
-                    .ThenInclude(z => z!.TypeEntity)
-                    .Where(
-                        x => (hasCoordinates ?? false) ?
-                        x.GeographyObjectCoordinates != null && x.GeographyObjectCoordinates.Any(y => y.DateDeleted == null) :
-                        x.GeographyObjectCoordinates == null || !x.GeographyObjectCoordinates.Any(y => y.DateDeleted == null)
-                    );
+            if (hasCoordinates.HasValue)
+            {
+                if (hasCoordinates.Value) query = query.Where(x => x.GeographyObjectCoordinates!.Any(y => y.DateDeleted == null));
+                else query = query.Where(x => !x.GeographyObjectCoordinates!.Any(y => y.DateDeleted == null));
+            }
             if (typeId.HasValue) query = query.Where(x => x.TypeId == typeId);
-            if (typeIds?.Length > 0) query = query.Where(x => typeIds.Contains(x.TypeId));
+            else if (typeIds?.Length > 0) query = query.Where(x => typeIds.Contains(x.TypeId));
+            if (hasCoordinates == true) query = query.Include(x => x.GeographyObjectCoordinates!.Where(y => y.DateDeleted == null)).ThenInclude(y => y.CoordinateEntity).ThenInclude(z => z!.TypeEntity);
 
             //Получение данных из бд
             List<GeographyObject> data = await query.ToListAsync();
