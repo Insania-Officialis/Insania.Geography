@@ -79,6 +79,9 @@ services
         };
     });
 
+//Подключение кэширования
+services.AddMemoryCache();
+
 //Внедрение зависимостей сервисов
 services.AddSingleton(_ => configuration); //конфигурация
 services.AddScoped<ITransliterationSL, TransliterationSL>(); //сервис транслитерации

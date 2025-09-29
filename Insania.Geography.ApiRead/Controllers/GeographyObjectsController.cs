@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
+﻿using Insania.Geography.Contracts.BusinessLogic;
 using Insania.Shared.Messages;
 using Insania.Shared.Models.Responses.Base;
-
-using Insania.Geography.Contracts.BusinessLogic;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Insania.Geography.ApiRead.Controllers;
 
@@ -11,9 +12,10 @@ namespace Insania.Geography.ApiRead.Controllers;
 /// Контроллер работы с географическими объектами
 /// </summary>
 /// <param cref="ILogger" name="logger">Сервис логгирования</param>
+/// <param cref="IMemoryCache" name="memoryCache">Сервис кэширования</param>
 /// <param cref="IGeographyObjectsBL" name="geographyObjectsBL">Сервис работы с бизнес-логикой географических объектов</param>
 [Route("geography_objects")]
-public class GeographyObjectsController(ILogger<GeographyObjectsController> logger, IGeographyObjectsBL geographyObjectsBL) : Controller
+public class GeographyObjectsController(ILogger<GeographyObjectsController> logger, IMemoryCache memoryCache, IGeographyObjectsBL geographyObjectsBL) : Controller
 {
     #region Зависимости
     /// <summary>
@@ -22,9 +24,21 @@ public class GeographyObjectsController(ILogger<GeographyObjectsController> logg
     private readonly ILogger<GeographyObjectsController> _logger = logger;
 
     /// <summary>
+    /// Сервис кэширования
+    /// </summary>
+    private readonly IMemoryCache _memoryCache = memoryCache;
+
+    /// <summary>
     /// Сервис работы с бизнес-логикой географических объектов
     /// </summary>
     private readonly IGeographyObjectsBL _geographyObjectsBL = geographyObjectsBL;
+    #endregion
+
+    #region Поля
+    /// <summary>
+    /// Класс для синхронизации потоков
+    /// </summary>
+    private static readonly SemaphoreSlim _cacheSemaphore = new(1, 1);
     #endregion
 
     #region Методы
@@ -70,11 +84,44 @@ public class GeographyObjectsController(ILogger<GeographyObjectsController> logg
     {
         try
         {
-            //Получение результата
-            BaseResponse? result = await _geographyObjectsBL.GetListWithCoordinates(type_ids?.ToArray());
+            //Формирование ключа кэша
+            string cacheKey = $"geo_objects_{string.Join("_", type_ids ?? [])}";
 
-            //Возврат ответа
-            return Ok(result);
+            //Возврат результата при его наличии в кэше
+            if (_memoryCache.TryGetValue(cacheKey, out string? cachedResult) && cachedResult != null) return Content(cachedResult, "application/json");
+
+            //Установка блокировки
+            await _cacheSemaphore.WaitAsync();
+            try
+            {
+                //Возврат результата при его наличии в кэше после установки блокировки
+                if (_memoryCache.TryGetValue(cacheKey, out cachedResult) && cachedResult != null) return Content(cachedResult, "application/json");
+
+                //Получение результата
+                BaseResponse? result = await _geographyObjectsBL.GetListWithCoordinates(type_ids?.ToArray());
+
+                //Сериализация ответа
+                JsonSerializerSettings settings = new()
+                {
+                    ContractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new SnakeCaseNamingStrategy()
+                    },
+                    Formatting = Formatting.None
+                };
+                string serializedResult = JsonConvert.SerializeObject(result, settings);
+
+                //Запись в кэш
+                _memoryCache.Set(cacheKey, serializedResult, new MemoryCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10), Size = 1 });
+
+                //Возврат результата
+                return Content(serializedResult, "application/json");
+            }
+            finally
+            {
+                //Освобождение потока
+                _cacheSemaphore.Release();
+            }
         }
         catch (Exception ex)
         {
