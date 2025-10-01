@@ -1,10 +1,13 @@
-﻿using Insania.Geography.Contracts.BusinessLogic;
-using Insania.Shared.Messages;
-using Insania.Shared.Models.Responses.Base;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+
+using Insania.Shared.Messages;
+using Insania.Shared.Models.Responses.Base;
+
+using Insania.Geography.Contracts.BusinessLogic;
 
 namespace Insania.Geography.ApiRead.Controllers;
 
