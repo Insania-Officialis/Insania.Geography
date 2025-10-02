@@ -19,9 +19,11 @@ using Insania.Shared.Messages;
 using Insania.Shared.Services;
 
 using Insania.Geography.BusinessLogic;
+using Insania.Geography.Contracts.Services;
 using Insania.Geography.Database.Contexts;
 using Insania.Geography.Middleware;
 using Insania.Geography.Models.Mapper;
+using Insania.Geography.Services;
 
 //Создания экземпляра постройки веб-приложения
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -86,6 +88,9 @@ services.AddMemoryCache();
 services.AddSingleton(_ => configuration); //конфигурация
 services.AddScoped<ITransliterationSL, TransliterationSL>(); //сервис транслитерации
 services.AddScoped<IPolygonParserSL, PolygonParserSL>(); //сервис преобразования полигона
+services.AddSingleton<LoggingSL>(); //сервис логгирование в бд
+services.AddSingleton<ILoggingSL>(provider => provider.GetRequiredService<LoggingSL>()); //подключение сервиса для использования другими сервисами
+services.AddHostedService(provider => provider.GetRequiredService<LoggingSL>()); //подключение сервиса для работы фоном
 services.AddGeographyBL(); //сервисы работы с бизнес-логикой в зоне географии
 
 //Добавление контекстов бд в коллекцию сервисов

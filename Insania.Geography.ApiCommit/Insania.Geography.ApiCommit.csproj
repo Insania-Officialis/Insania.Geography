@@ -38,6 +38,7 @@
     <ProjectReference Include="..\Insania.Geography.Messages\Insania.Geography.Messages.csproj" />
     <ProjectReference Include="..\Insania.Geography.Middleware\Insania.Geography.Middleware.csproj" />
     <ProjectReference Include="..\Insania.Geography.Models\Insania.Geography.Models.csproj" />
+    <ProjectReference Include="..\Insania.Geography.Services\Insania.Geography.Services.csproj" />
   </ItemGroup>
 
 </Project>

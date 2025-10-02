@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Insania.Geography.Contracts\Insania.Geography.Contracts.csproj" />
     <ProjectReference Include="..\Insania.Geography.DataAccess\Insania.Geography.DataAccess.csproj" />
-    <ProjectReference Include="..\Insania.Geography.Database\Insania.Geography.Database.csproj" />
   </ItemGroup>
 
 </Project>
