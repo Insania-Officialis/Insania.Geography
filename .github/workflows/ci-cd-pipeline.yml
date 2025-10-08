@@ -55,6 +55,8 @@ jobs:
     # Сборка и запуск контейнера с тестами
     - name: Сборка и запуск unit-тестов
       run: |
+        [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+        $OutputEncoding = [System.Text.Encoding]::UTF8
         cd C:\Insania
         docker-compose build insania_geography_unit_tests
         try {
