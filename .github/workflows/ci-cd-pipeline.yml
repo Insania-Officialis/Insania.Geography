@@ -10,6 +10,67 @@ on:
 
 # Определение заданий
 jobs:
+  # Задание для запуска unit-тестов на linux
+  unit-tests-linux:
+    runs-on: insania-linux-server
+    
+    # Шаги выполнения задания
+    steps:
+    # Обновление кода
+    - name: Обновление кода
+      run: |
+        cd /app
+        cd Insania.Geography
+        git pull
+      shell: bash
+
+    # Сборка и запуск контейнера с тестами
+    - name: Сборка и запуск unit-тестов
+      run: |
+        cd /app
+        docker-compose build insania_geography_unit_tests
+        if docker-compose run --rm insania_geography_unit_tests; then
+          echo "✅ Успешное завершение unit-тестов"
+        else
+          echo "❌ Не пройдены unit-тесты"
+          docker-compose logs insania_geography_unit_tests --tail=50
+          exit 1
+        fi
+      shell: bash
+
+  # Задание для запуска unit-тестов на windows
+  unit-tests-windows:
+    runs-on: insania-windows-server
+    
+    # Шаги выполнения задания
+    steps:
+    # Обновление кода
+    - name: Обновление кода
+      run: |
+        cd C:\Insania
+        cd Insania.Geography
+        git pull
+      shell: powershell
+
+    # Сборка и запуск контейнера с тестами
+    - name: Сборка и запуск unit-тестов
+      run: |
+        cd C:\Insania
+        docker-compose build insania_geography_unit_tests
+        try {
+          docker-compose run --rm insania_geography_unit_tests
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "✅ Успешное завершение unit-тестов"
+          } else {
+            throw "Tests failed with exit code: $LASTEXITCODE"
+          }
+        } catch {
+          Write-Host "❌ Не пройдены unit-тесты"
+          docker-compose logs insania_geography_unit_tests --tail=50
+          exit 1
+        }
+      shell: powershell
+
   # Задание для сборки на linux
   build-linux:
     runs-on: insania-linux-server
